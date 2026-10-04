@@ -1,0 +1,36 @@
+name: Publish
+
+# Orchestrator for a release push: runs the checks gate exactly once, then fans
+# out to publish-app.yml and publish-plugins.yml (called as reusable
+# workflows) so a single push to main or a v* tag doesn't run checks twice.
+#
+# Each of those two workflows can still be dispatched standalone from the
+# Actions UI (they run their own checks in that case) to rebuild just the app
+# or just the plugins.
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+
+permissions:
+  contents: write
+
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+
+  app:
+    needs: checks
+    uses: ./.github/workflows/publish-app.yml
+    secrets: inherit
+
+  plugins:
+    needs: checks
+    uses: ./.github/workflows/publish-plugins.yml
+    secrets: inherit

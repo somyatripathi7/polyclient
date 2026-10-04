@@ -1,0 +1,99 @@
+name: Tag release
+
+# Manually cut a release tag. Computes the next semver from the latest existing
+# `v*` tag (or the workspace Cargo.toml version when there are none), then
+# creates and pushes an annotated `vX.Y.Z` tag. Pushing that tag triggers
+# publish.yml, which runs checks once and fans out to publish-app.yml and
+# publish-plugins.yml in stable (tag) mode.
+#
+# IMPORTANT: a tag pushed with the default GITHUB_TOKEN will NOT trigger those
+# `on: push` workflows (GitHub's loop-prevention). To make tagging kick off the
+# publish workflows, add a Personal Access Token with `contents: write` as a
+# repo secret named RELEASE_TOKEN; this workflow uses it when present and falls
+# back to GITHUB_TOKEN (tag created but publishes must then be run manually).
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which part to bump (ignored if 'version' is set)"
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+      version:
+        description: "Explicit version without the leading v (e.g. 0.2.0). Overrides bump."
+        type: string
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tag-release
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Compute next version
+        id: ver
+        shell: bash
+        run: |
+          set -euo pipefail
+          input="${{ inputs.version }}"
+          if [[ -n "$input" ]]; then
+            next="${input#v}"
+          else
+            # Highest existing v* tag, else the Cargo.toml base version.
+            latest=$(git tag -l 'v*' | sed 's/^v//' | sort -V | tail -1)
+            if [[ -z "$latest" ]]; then
+              latest=$(grep -E '^version = "' Cargo.toml | head -1 | sed -E 's/version = "([^"]*)"/\1/')
+            fi
+            IFS='.' read -r maj min pat <<< "$latest"
+            maj=${maj:-0}; min=${min:-0}; pat=${pat:-0}
+            case "${{ inputs.bump }}" in
+              major) maj=$((maj+1)); min=0; pat=0 ;;
+              minor) min=$((min+1)); pat=0 ;;
+              patch) pat=$((pat+1)) ;;
+            esac
+            next="${maj}.${min}.${pat}"
+          fi
+          # Reject if not strict semver or already tagged.
+          if ! [[ "$next" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::'$next' is not a valid major.minor.patch version"; exit 1
+          fi
+          if git rev-parse "v$next" >/dev/null 2>&1; then
+            echo "::error::tag v$next already exists"; exit 1
+          fi
+          echo "tag=v$next" >> "$GITHUB_OUTPUT"
+          echo "Next tag: v$next"
+
+      - name: Create and push tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.ver.outputs.tag }}" -m "Release ${{ steps.ver.outputs.tag }}"
+          git push origin "${{ steps.ver.outputs.tag }}"
+
+      - name: Summary
+        shell: bash
+        env:
+          HAS_TOKEN: ${{ secrets.RELEASE_TOKEN != '' }}
+        run: |
+          {
+            echo "### Tagged ${{ steps.ver.outputs.tag }}"
+            if [[ "$HAS_TOKEN" == "true" ]]; then
+              echo "Pushed with RELEASE_TOKEN — publish workflows will run."
+            else
+              echo "Pushed with GITHUB_TOKEN — publish workflows will NOT auto-run."
+              echo "Add a RELEASE_TOKEN secret, or run publish-app / publish-plugins manually."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,4255 @@
+/* polyclient desktop client — compact IDE theme.
+ *
+ * The whole app is painted from the CSS custom properties below. The palette
+ * lives in per-theme `[data-theme]` blocks; `:root` carries the non-color
+ * defaults plus a copy of the default (mocha) palette so the app is styled
+ * before JS sets `data-theme` on <html> (see src/theme.ts). To add a theme:
+ * add a `[data-theme="<id>"]` block here and an entry in THEMES (src/theme.ts). */
+
+:root {
+  /* Default palette = Catppuccin Mocha (mirrors [data-theme="mocha"]). */
+  --bg: #1e1e2e;
+  --bg-2: #181825;
+  --bg-3: #11111b;
+  --panel: #232334;
+  --border: #313244;
+  --text: #cdd6f4;
+  --muted: #7f849c;
+  --accent: #89b4fa;
+  --accent-2: #74c7ec;
+  --ok: #a6e3a1;
+  --err: #f38ba8;
+  --warn: #f9e2af;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+}
+
+/* Themes ----------------------------------------------------------------- */
+
+[data-theme="mocha"] {
+  --bg: #1e1e2e;
+  --bg-2: #181825;
+  --bg-3: #11111b;
+  --panel: #232334;
+  --border: #313244;
+  --text: #cdd6f4;
+  --muted: #7f849c;
+  --accent: #89b4fa;
+  --accent-2: #74c7ec;
+  --ok: #a6e3a1;
+  --err: #f38ba8;
+  --warn: #f9e2af;
+}
+
+[data-theme="dracula"] {
+  --bg: #282a36;
+  --bg-2: #21222c;
+  --bg-3: #191a21;
+  --panel: #343746;
+  --border: #44475a;
+  --text: #f8f8f2;
+  --muted: #6272a4;
+  --accent: #bd93f9;
+  --accent-2: #8be9fd;
+  --ok: #50fa7b;
+  --err: #ff5555;
+  --warn: #f1fa8c;
+}
+
+[data-theme="nord"] {
+  --bg: #2e3440;
+  --bg-2: #2b303b;
+  --bg-3: #242933;
+  --panel: #3b4252;
+  --border: #434c5e;
+  --text: #eceff4;
+  --muted: #7b88a1;
+  --accent: #88c0d0;
+  --accent-2: #81a1c1;
+  --ok: #a3be8c;
+  --err: #bf616a;
+  --warn: #ebcb8b;
+}
+
+[data-theme="tokyo-night"] {
+  --bg: #1a1b26;
+  --bg-2: #16161e;
+  --bg-3: #13131a;
+  --panel: #24283b;
+  --border: #2f3349;
+  --text: #c0caf5;
+  --muted: #565f89;
+  --accent: #7aa2f7;
+  --accent-2: #7dcfff;
+  --ok: #9ece6a;
+  --err: #f7768e;
+  --warn: #e0af68;
+}
+
+[data-theme="gruvbox"] {
+  --bg: #282828;
+  --bg-2: #1d2021;
+  --bg-3: #161616;
+  --panel: #3c3836;
+  --border: #504945;
+  --text: #ebdbb2;
+  --muted: #928374;
+  --accent: #83a598;
+  --accent-2: #8ec07c;
+  --ok: #b8bb26;
+  --err: #fb4934;
+  --warn: #fabd2f;
+}
+
+[data-theme="monokai"] {
+  --bg: #272822;
+  --bg-2: #1f201a;
+  --bg-3: #181910;
+  --panel: #3e3d32;
+  --border: #49483e;
+  --text: #f8f8f2;
+  --muted: #75715e;
+  --accent: #66d9ef;
+  --accent-2: #a6e22e;
+  --ok: #a6e22e;
+  --err: #f92672;
+  --warn: #e6db74;
+}
+
+[data-theme="solarized-dark"] {
+  --bg: #002b36;
+  --bg-2: #00252e;
+  --bg-3: #001f27;
+  --panel: #073642;
+  --border: #0a4b59;
+  --text: #93a1a1;
+  --muted: #586e75;
+  --accent: #268bd2;
+  --accent-2: #2aa198;
+  --ok: #859900;
+  --err: #dc322f;
+  --warn: #b58900;
+}
+
+[data-theme="solarized-light"] {
+  --bg: #fdf6e3;
+  --bg-2: #f4eeda;
+  --bg-3: #eee8d5;
+  --panel: #ffffff;
+  --border: #ddd6c1;
+  --text: #586e75;
+  --muted: #93a1a1;
+  --accent: #268bd2;
+  --accent-2: #2aa198;
+  --ok: #859900;
+  --err: #dc322f;
+  --warn: #b58900;
+}
+
+[data-theme="latte"] {
+  --bg: #eff1f5;
+  --bg-2: #e6e9ef;
+  --bg-3: #dce0e8;
+  --panel: #ffffff;
+  --border: #ccd0da;
+  --text: #4c4f69;
+  --muted: #8c8fa1;
+  --accent: #1e66f5;
+  --accent-2: #209fb5;
+  --ok: #40a02b;
+  --err: #d20f39;
+  --warn: #df8e1d;
+}
+
+[data-theme="github-light"] {
+  --bg: #ffffff;
+  --bg-2: #f6f8fa;
+  --bg-3: #eaeef2;
+  --panel: #ffffff;
+  --border: #d0d7de;
+  --text: #1f2328;
+  --muted: #656d76;
+  --accent: #0969da;
+  --accent-2: #1a7f37;
+  --ok: #1a7f37;
+  --err: #cf222e;
+  --warn: #9a6700;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button.primary {
+  background: var(--accent);
+  color: var(--bg-3);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+button.danger {
+  background: #c0392b;
+  color: #fff;
+  border-color: #c0392b;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Native <select> chrome (the closed control's arrow on macOS/Windows and the
+ * popup list on Linux/WebKitGTK) doesn't follow our dark theme. Strip the
+ * native appearance, paint our own caret, and theme the options so dropdowns
+ * look identical across platforms. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* Room for the caret so long values don't sit under it. */
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%237f849c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 6px;
+}
+
+select:focus {
+  border-color: var(--accent);
+}
+
+select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* WebKitGTK (Linux) renders the popup options from these rules; macOS/Windows
+ * use the OS popup and ignore them, which is fine. */
+select option,
+select optgroup {
+  color: var(--text);
+  background: var(--bg-2);
+}
+
+select option:checked,
+select option:hover {
+  color: var(--bg-3);
+  background: var(--accent);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* Layout ----------------------------------------------------------------- */
+
+.app {
+  display: flex;
+  height: 100%;
+}
+
+/* Collapsible sidebar: a narrow rail that overlays the main content and
+   expands to its configured width (`--sidebar-expanded`) on hover. The rail
+   keeps a fixed slot in the flex layout so expanding doesn't reflow `.main`. */
+.sidebar.collapsible {
+  /* Out of flow in BOTH states so hovering never toggles `position`
+     (relative<->absolute), which removed the rail from the flex flow,
+     reflowed `.main`, and bounced `:hover` on/off — the flicker. The rail's
+     flex slot is held instead by a left margin on `.main` (see `.main` below),
+     so only the element's own width animates on hover and `.main` never moves. */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--sidebar-rail, 64px) !important;
+  /* Above workspace-scoped overlays (transfer progress + connection loader, both
+     z-index 50) so the rail — and its expanded-on-hover panel/shadow — stays on
+     top and clickable while one is showing. Stays below the app-scope loader
+     (200) and modals (100), which are intentional full-window blockers. */
+  z-index: 60;
+  overflow: hidden;
+  transition: width 0.16s ease;
+}
+
+.sidebar.collapsible:hover {
+  width: var(--sidebar-expanded, 240px) !important;
+  overflow: visible;
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.35);
+}
+
+/* In the collapsed (non-hovered) state, hide everything but the connection
+   dots so the rail stays tidy; labels and chrome reappear on hover. */
+.sidebar.collapsible:not(:hover) .logo-sub,
+.sidebar.collapsible:not(:hover) .logo-badge,
+.sidebar.collapsible:not(:hover) .new-btn,
+.sidebar.collapsible:not(:hover) .conn-name,
+.sidebar.collapsible:not(:hover) .conn-item .icon-btn,
+.sidebar.collapsible:not(:hover) .conn-item .conn-menu,
+.sidebar.collapsible:not(:hover) .conn-list .muted,
+.sidebar.collapsible:not(:hover) .install-btn,
+.sidebar.collapsible:not(:hover) .footer-menu {
+  display: none;
+}
+
+/* In the collapsed rail the logo is the only identifier, so enlarge it and
+   center it. Trim the item's horizontal padding so the highlight box (inset a
+   little from the rail by its margin) still fully contains the logo. Reverts on
+   hover. */
+.sidebar.collapsible:not(:hover) .conn-item {
+  justify-content: center;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.sidebar.collapsible:not(:hover) .plugin-logo {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg-2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 10px;
+}
+
+/* Draggable divider between sidebar and main; widened hit area, accent on hover. */
+.sidebar-resizer {
+  flex-shrink: 0;
+  width: 5px;
+  margin-left: -3px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.12s;
+}
+
+.sidebar-resizer:hover {
+  background: var(--accent);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 4px 2px 8px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.logo-sub {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* Nightly-build marker next to the logo, and the channel tag in the install
+   dialog header. */
+.logo-badge {
+  margin-left: auto;
+  align-self: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1e1e2e;
+  background: #f9e2af;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.channel-tag {
+  margin-left: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* Self-update: footer action, available-update toast, and "up to date" note. */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.footer-menu {
+  position: relative;
+  margin-left: auto;
+}
+
+.footer-menu .icon-btn {
+  opacity: 1;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 6px;
+}
+
+.footer-menu .icon-btn:hover {
+  color: var(--accent);
+}
+
+.footer-menu-popup {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 4px);
+  min-width: 180px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  z-index: 10;
+}
+
+.footer-menu-theme {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.footer-menu-theme select {
+  width: 100%;
+  font-size: 12px;
+}
+
+.footer-menu-item {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--text);
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.footer-menu-item:hover {
+  background: var(--bg-3);
+  color: var(--accent);
+}
+
+.footer-menu-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.footer-menu-toggle input {
+  margin: 0;
+  cursor: pointer;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 4px 2px;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--accent);
+}
+
+.update-banner {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 320px;
+  padding: 14px 16px;
+  background: var(--panel, #1e1e2e);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+.update-banner-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.update-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* When both the app-update and plugin-update banners are shown, lift the
+   plugin one above the app one (both are fixed at bottom-right). */
+.update-banner-stacked {
+  bottom: 120px;
+}
+
+.update-toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 50;
+  padding: 10px 14px;
+  font-size: 13px;
+  background: var(--panel, #1e1e2e);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+.new-btn {
+  text-align: left;
+}
+
+.new-btn.active {
+  border-color: var(--accent);
+}
+
+.install-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 5px 2px;
+  cursor: pointer;
+}
+
+.install-btn:hover {
+  color: var(--accent);
+}
+
+.support-btn:hover {
+  color: #e05c7a;
+}
+
+/* Install-plugin modal --------------------------------------------------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cell-editor-modal {
+  width: 680px;
+}
+
+.cell-editor {
+  width: 100%;
+  min-height: 460px;
+  resize: vertical;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  tab-size: 2;
+}
+
+.cell-editor-actions {
+  align-items: center;
+}
+
+.cell-editor-actions .spacer {
+  flex: 1;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.modal .preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+/* About dialog body: compact stack of name/version/description/links. */
+.about-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-dialog p {
+  margin: 0;
+}
+
+.about-dialog .about-name .logo {
+  font-size: 18px;
+}
+
+.about-dialog a {
+  color: var(--accent, #4a9eff);
+  word-break: break-all;
+}
+
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.preview-row > span:last-child {
+  text-align: right;
+  word-break: break-all;
+}
+
+.plugin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Header row above the plugin list: the "make sure no connections are open"
+   warning on the left, the "Update all" action on the right. */
+.plugin-list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.plugin-list-head .msg.warn {
+  margin: 0;
+  flex: 1;
+}
+
+.plugin-list-head > button {
+  white-space: nowrap;
+}
+
+.plugin-search {
+  width: 100%;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+.plugin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.plugin-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.plugin-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.plugin-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ok {
+  color: var(--ok);
+}
+
+.warn {
+  color: #f9e2af;
+}
+
+.small {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.conn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.conn-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.conn-item:hover {
+  background: var(--panel);
+}
+
+.conn-item.active {
+  background: var(--panel);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.conn-item.dragging {
+  opacity: 0.5;
+}
+
+.conn-item.drag-over {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+
+.conn-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.close-x,
+.icon-btn {
+  border: none;
+  background: none;
+  padding: 0 4px;
+  color: var(--muted);
+  opacity: 0;
+}
+
+.conn-item:hover .close-x,
+.conn-item:hover .icon-btn,
+.conn-item.active .close-x,
+.conn-item.active .icon-btn {
+  opacity: 1;
+}
+
+.close-x:hover {
+  color: var(--err);
+}
+
+/* The close button in a modal header isn't inside a `.conn-item`, so the
+ * hover-to-reveal rule above never applies — keep it always visible. */
+.modal-header .close-x {
+  opacity: 1;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  color: var(--accent);
+}
+
+/* Per-connection actions popup (⋮): Edit / Delete moved out of the row. */
+.conn-menu {
+  position: relative;
+  display: flex;
+}
+
+.conn-menu-popup {
+  position: fixed;
+  min-width: 140px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  z-index: 100;
+}
+
+/* Keep the trigger visible while its popup is open, even without hover. */
+.conn-menu:has(.conn-menu-popup) .icon-btn {
+  opacity: 1;
+}
+
+.footer-menu-item.danger {
+  background: none;
+  border-color: transparent;
+  font-weight: normal;
+  color: var(--err);
+}
+
+.footer-menu-item.danger:hover {
+  background: var(--bg-3);
+  color: var(--err);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-left: 2px;
+  background: var(--dot-color, var(--muted));
+}
+
+/* Per-kind fallback colors (used when a plugin id has no specific color). */
+.dot-rdbms {
+  --dot-color: var(--accent);
+}
+
+.dot-document {
+  --dot-color: var(--ok);
+}
+
+.dot-rabbitmq {
+  --dot-color: var(--warn);
+}
+
+.dot-cli {
+  --dot-color: var(--ok);
+}
+
+/* Per-plugin brand colors. */
+.dot-id-ssh {
+  --dot-color: #7ec8e3;
+}
+.dot-id-postgres {
+  --dot-color: #4a90d9;
+}
+
+.dot-id-rabbitmq {
+  --dot-color: #f60;
+}
+
+.dot-id-mongodb {
+  --dot-color: #00684a;
+}
+
+/* Dim saved connections that aren't currently open; light up the connected. */
+.dot {
+  opacity: 0.35;
+}
+
+/* Connected: full opacity + a soft glow in the plugin's own color. */
+.dot.connected {
+  opacity: 1;
+  box-shadow: 0 0 6px 1px var(--dot-color, var(--ok));
+}
+
+/* Plugin logo (bundled SVG, resolved by id then kind). Sits in the same slot
+   as the connection dot. Generic kind glyphs use `currentColor`, so the muted
+   text color applies until the connection is live. Mirrors the dot's
+   dim/connected states. */
+.plugin-logo {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-left: 2px;
+  object-fit: contain;
+  color: var(--muted);
+  opacity: 0.45;
+}
+
+.plugin-logo.connected {
+  color: var(--text);
+  opacity: 1;
+}
+
+/* Dim disconnected rows; brighten connected ones. */
+.conn-item:not(.connected) .conn-name {
+  color: var(--muted);
+}
+
+.conn-item.connected .conn-name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+}
+
+/* When the sidebar is a collapsible rail it's out of flow (position: absolute),
+   so reserve its rail width here to hold the layout slot. The rail expands over
+   `.main` on hover without reflowing it — `.main` stays put, so the hover target
+   never moves and the rail no longer flickers. */
+.sidebar.collapsible ~ .main {
+  margin-left: var(--sidebar-rail, 64px);
+}
+
+.workspace-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.workspace-title {
+  font-weight: 600;
+}
+
+.badge {
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+.placeholder {
+  padding: 40px;
+  color: var(--muted);
+}
+
+/* Connection form -------------------------------------------------------- */
+
+.conn-form {
+  max-width: 460px;
+  margin: 32px auto;
+  padding: 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.conn-form h1 {
+  font-size: 18px;
+  margin: 0 0 4px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field .req {
+  color: var(--err);
+  margin-left: 2px;
+}
+
+.file-path-field {
+  display: flex;
+  gap: 6px;
+}
+
+.file-path-field input {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-path-field button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.msg {
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.msg.error {
+  background: rgba(243, 139, 168, 0.12);
+  color: var(--err);
+}
+
+.msg.warn {
+  background: rgba(255, 214, 102, 0.12);
+  color: var(--warn);
+}
+
+.msg.ok {
+  background: rgba(166, 227, 161, 0.12);
+  color: var(--ok);
+}
+
+/* Workspaces ------------------------------------------------------------- */
+
+.workspace {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* CLI / SSH terminal workspace.
+   Row 1 (`cli-top`): scripts list + editor side by side.
+   Row 2 (`cli-tabs`): terminal tab bar.
+   Row 3 (`cli-terminals`): the active terminal (inactive ones are kept
+   mounted but hidden via `display:none`). */
+.cli-workspace {
+  flex-direction: column;
+}
+
+.cli-top {
+  display: flex;
+  flex-direction: row;
+  /* Height is controlled inline (persisted per connection) and adjusted via the
+   * `.pane-resizer-y` handle below; clamp here as a guardrail. */
+  flex: 0 0 auto;
+  min-height: 90px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.cli-scripts {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--bg-2);
+  overflow-y: auto;
+  padding: 6px;
+}
+
+/* The scripts panel reuses the RDBMS tree's `.tree-queries` markup, but here it
+ * stands alone — drop the separator border/margin and let the list fill the
+ * panel instead of reserving a fixed height. */
+.cli-scripts .tree-queries {
+  border-bottom: none;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.cli-scripts .tree-queries-list {
+  height: auto;
+  flex: 1;
+  max-height: none;
+  resize: none;
+}
+
+.cli-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  background: var(--bg-2);
+}
+
+.cli-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cli-editor-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+}
+
+.cli-save-status {
+  font-size: 11px;
+}
+
+.cli-editor-area {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Cascadia Code", "JetBrains Mono", Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  tab-size: 2;
+  cursor: text;
+  white-space: pre;
+}
+
+/* Terminal tab bar. Sits between the editor row and the terminal area. */
+.cli-tabs {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 4px 6px 0;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.cli-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--text-muted, var(--text));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.cli-tab.active {
+  color: var(--text);
+  background: var(--bg);
+  border-color: var(--accent, var(--border));
+}
+
+.cli-tab-title {
+  pointer-events: none;
+}
+
+.cli-tab-close,
+.cli-tab-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+  opacity: 0.6;
+}
+
+.cli-tab-close:hover,
+.cli-tab-add:hover {
+  opacity: 1;
+}
+
+.cli-tab-add {
+  align-self: center;
+  font-size: 16px;
+  padding: 2px 8px;
+  color: var(--text-muted, var(--text));
+}
+
+/* Holds all terminal tabs; the active one fills it, the rest are display:none. */
+.cli-terminals {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  position: relative;
+}
+
+.cli-terminal {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 6px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* xterm.js resets: let the terminal fill the container */
+.cli-terminal .xterm {
+  height: 100%;
+}
+
+.cli-terminal .xterm-viewport,
+.cli-terminal .xterm-screen {
+  width: 100% !important;
+}
+
+.tree {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-2);
+}
+
+/* Draggable divider to the right of a workspace tree / scripts panel; widened
+   hit area, accent on hover. Mirrors `.sidebar-resizer`. The panel's width is
+   driven inline by React (see useResizable); the CSS width above is just the
+   initial default before mount. */
+.tree-resizer {
+  flex-shrink: 0;
+  width: 5px;
+  margin-left: -3px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background 0.12s;
+  z-index: 1;
+}
+
+.tree-resizer:hover {
+  background: var(--accent);
+}
+
+/* Horizontal handle for a vertical (editor-over-content) split: full width,
+   sits between the editor pane above and the content below. */
+.pane-resizer-y {
+  flex-shrink: 0;
+  height: 5px;
+  margin-top: -3px;
+  cursor: row-resize;
+  background: transparent;
+  transition: background 0.12s;
+  z-index: 1;
+}
+
+.pane-resizer-y:hover {
+  background: var(--accent);
+}
+
+.tree-top {
+  flex-shrink: 0;
+  padding: 8px 8px 0;
+}
+
+.tree-schemas {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.tree-group {
+  margin-bottom: 4px;
+}
+
+.tree-db-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tree-db-row select {
+  flex: 1;
+  min-width: 0;
+}
+
+.tree-refresh {
+  flex-shrink: 0;
+  margin-left: auto;
+  background: none;
+  border: none;
+  padding: 2px 6px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tree-refresh:hover:not(:disabled) {
+  color: var(--accent);
+}
+
+.tree-refresh:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.tree-dbselect {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 2px 2px 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tree-queries {
+  padding: 2px 2px 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* User-resizable list: drag the bottom edge to set the height; scrolls inside
+ * once the saved files exceed it. */
+.tree-queries-list {
+  height: 120px;
+  min-height: 32px;
+  max-height: 60vh;
+  overflow-y: auto;
+  resize: vertical;
+}
+
+.tree-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.tree-add {
+  background: none;
+  border: none;
+  padding: 0 4px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tree-add:hover {
+  color: var(--accent);
+}
+
+.tree-name-input {
+  width: 100%;
+  margin-bottom: 4px;
+  box-sizing: border-box;
+}
+
+.tree-node.leaf .close-x {
+  margin-left: auto;
+  opacity: 0;
+}
+
+.tree-node.leaf:hover .close-x {
+  opacity: 1;
+}
+
+.tree-dbselect select {
+  width: 100%;
+}
+
+.tree-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tree-node:hover {
+  background: var(--panel);
+}
+
+.tree-node.leaf {
+  padding-left: 20px;
+}
+
+.tree-node.active {
+  background: var(--panel);
+  color: var(--accent);
+}
+
+.tree-caret {
+  width: 10px;
+  color: var(--muted);
+}
+
+.tree-kind {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 12px;
+  gap: 10px;
+}
+
+/* Wraps the SQL editor at a controlled (persisted) height; the editor fills it
+   and the results below take the remaining space. */
+.editor-code-pane {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.editor-code-pane .code {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.editor-toolbar .running {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Browse toolbar: paging + limit for the table-data view. Per-column filters
+   live on the column headers (see .th-funnel / .filter-popover). */
+.browse-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.browse-bar .spacer {
+  flex: 1;
+}
+
+.filter-clear-all {
+  font-size: 12px;
+  padding: 2px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.funnel-icon {
+  display: inline-block;
+  vertical-align: -1px;
+}
+
+.browse-limit {
+  width: 70px;
+  font-size: 12px;
+  padding: 3px 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+}
+
+.browse-page {
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Column-header layout: the sortable label and the filter funnel sit side by
+   side; the filter popover anchors below the header. */
+.th-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.th-label {
+  flex: 1;
+}
+
+.th-label.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.th-label.sortable:hover {
+  color: var(--accent);
+}
+
+.th-funnel {
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.th-funnel:hover:not(:disabled) {
+  background: var(--bg-2);
+  color: var(--text);
+}
+
+.th-funnel.on {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+table.grid th.filtering {
+  /* Let the popover escape the sticky header's clipped box. */
+  z-index: 5;
+  overflow: visible;
+}
+
+/* Per-column filter popover, anchored under a header. */
+.filter-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 280px;
+  padding: 10px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  /* Reset the header's typography for normal-weight controls. */
+  font-weight: 400;
+  color: var(--text);
+  white-space: normal;
+  cursor: default;
+}
+
+.filter-popover-title {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--accent-2);
+}
+
+.filter-popover-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.filter-popover-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.filter-popover select,
+.filter-popover input,
+.filter-popover textarea {
+  font-size: 12px;
+  padding: 3px 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+}
+
+.filter-popover .filter-value {
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-popover-where {
+  width: 100%;
+  resize: vertical;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  line-height: 1.4;
+}
+
+.filter-popover-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-popover-actions .spacer {
+  flex: 1;
+}
+
+.editor-hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.editor-file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.editor-file-dirty {
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+textarea.code {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ── CodeMirror code editor (CodeEditorV2.tsx) ────────────────────────────
+   The wrapper (`.code-editor-v2`) carries one of the editor variant classes
+   (`code` for SQL, `cli-editor-area` for the CLI script editor, plus the
+   content-editor variants) for sizing; CodeMirror's view (`.cm-editor`) fills
+   it. Token colors come from a CodeMirror HighlightStyle keyed on theme vars
+   (see CodeEditorV2.tsx); the rules here are structural chrome only. */
+.code-editor-v2 {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.code-editor-v2 > .cm-editor {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+.code-editor-v2 .cm-scroller {
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.code-editor-v2 .cm-content {
+  font-family: inherit;
+}
+
+/* SQL editor variant: fills its (drag-resizable) pane, soft-wraps long lines
+   (the editor passes `lineWrapping`). */
+.code-editor-v2.code {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* CLI script editor variant: fills the pane; no wrap, horizontal scroll. */
+.code-editor-v2.cli-editor-area {
+  flex: 1;
+  min-height: 0;
+}
+
+.status-line {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status-line.error {
+  color: var(--err);
+}
+
+.result-scroll {
+  flex: 1;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* MongoDB results: one read-only CodeEditorV2 per document. Each sizes to its
+   own content (height auto, block layout) so the documents stack down the
+   scroll list rather than each filling the pane. */
+.code-editor-v2.doc-card {
+  display: block;
+  margin: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-2);
+}
+
+.code-editor-v2.doc-card > .cm-editor {
+  height: auto;
+}
+
+/* Script tab: each statement's result is a card with a header (index + the
+   collection.method that ran + elapsed) above its document/reply cards. */
+.script-result {
+  margin: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-2);
+}
+
+.script-result-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.script-result-num {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.script-result-src {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: monospace;
+}
+
+/* Inside a result card the doc cards have no extra outer border/background. */
+.script-result .code-editor-v2.doc-card {
+  margin: 6px;
+}
+
+/* "No documents." note for an empty cursor reply in a script result. */
+.script-empty {
+  margin: 8px;
+}
+
+/* Documents tab: each result document with a Compass-style hover toolbar
+   (edit / copy / delete) overlaid at the top-right of its card. */
+.doc-row {
+  position: relative;
+}
+
+.doc-actions {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  z-index: 1;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.doc-row .icon-btn {
+  font-size: 13px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--bg-2);
+}
+
+/* Reveal the toolbar on row hover (icon-btn is opacity:0 by default). */
+.doc-row:hover .icon-btn {
+  opacity: 1;
+}
+
+.doc-row .icon-btn.danger:hover {
+  color: var(--err);
+}
+
+/* While editing, the toolbar (Save/Cancel) sits below the editor, always shown. */
+.doc-row.editing .doc-actions {
+  position: static;
+  margin: 0 8px 8px;
+  justify-content: flex-end;
+}
+
+/* App-default tab strip: an underline-style view switcher. Originated as the
+   MongoDB per-collection tab bar; promoted here so any workspace can reuse it
+   (currently MongoDB collection views + curlui request/response sub-tabs). */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: -1px;
+}
+.tab:hover {
+  color: var(--text);
+}
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+/* Small count pill / accent dot some tabs show as a status hint. */
+.tab-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--text);
+}
+.tab-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* MongoDB collection tab bar: the current "db / collection" label, pushed to
+   the right of the shared .tabs strip. */
+.mongo-tabs-coll {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: auto;
+  order: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Aggregation builder: a vertical list of stages, each an operator dropdown
+   plus its own code editor. */
+.agg-stages {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 45%;
+  overflow: auto;
+}
+.agg-stage {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-2);
+}
+.agg-stage.disabled {
+  opacity: 0.55;
+}
+.agg-stage-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+.agg-stage-num {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg-3);
+  border-radius: 50%;
+}
+.agg-stage-btn {
+  padding: 2px 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.agg-stage-btn:hover {
+  color: var(--text);
+}
+.agg-stage-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Light/secondary button (Add stage, Refresh). */
+button.ghost {
+  background: transparent;
+  color: var(--muted);
+}
+button.ghost:hover {
+  color: var(--text);
+}
+
+/* Placeholder shown in the editor pane before a collection is selected. */
+.empty-hint {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 16px;
+  max-width: 480px;
+}
+
+/* Per-statement result tabs (multi-statement scripts). */
+.result-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.result-tabs button {
+  padding: 2px 10px;
+  font-size: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 5px 5px 0 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.result-tabs button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-3);
+}
+
+table.grid {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+table.grid th,
+table.grid td {
+  border: 1px solid var(--border);
+  /* extra right padding (~3 chars) so values have breathing room before the
+     next column; taller vertical padding spaces the rows apart. */
+  padding: 7px 3ch 7px 8px;
+  text-align: left;
+  /* nowrap (not pre) so multi-line text/JSON stays on one line and every row
+     keeps the same height; the full value opens in the cell editor. */
+  white-space: nowrap;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.grid th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-3);
+  color: var(--accent-2);
+}
+
+table.grid th .sort-ind {
+  color: var(--accent);
+  font-size: 10px;
+}
+
+table.grid td.null {
+  color: var(--muted);
+  font-style: italic;
+}
+
+table.grid tr.empty-row td {
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  padding: 12px;
+}
+
+.structure-heading {
+  margin: 16px 8px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-2);
+}
+
+/* Roomier structure tables with chip-style cell values. */
+table.grid.structure-table th,
+table.grid.structure-table td {
+  padding: 4px 10px;
+  white-space: normal;
+}
+
+.chip {
+  display: inline-block;
+  margin: 1px 4px 1px 0;
+  padding: 1px 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Nullable column: nullable (YES) vs NOT NULL (NO). */
+.chip.chip-yes {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+
+.chip.chip-no {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+
+/* Structure view: per-constraint-type chip colors. */
+.chip.chip-pk {
+  color: var(--warn);
+  border-color: var(--warn);
+  font-weight: 600;
+}
+
+.chip.chip-notnull {
+  color: var(--err);
+  border-color: var(--err);
+}
+
+.chip.chip-unique {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.chip.chip-fk {
+  color: var(--ok);
+  border-color: var(--ok);
+  font-family: monospace;
+}
+
+/* Editable grid ---------------------------------------------------------- */
+
+table.grid th.pk {
+  color: var(--warn);
+}
+
+table.grid th.pk .key {
+  font-size: 10px;
+}
+
+table.grid td:not(.gutter):not(.editing) {
+  cursor: text;
+}
+
+table.grid th.gutter,
+table.grid td.gutter {
+  width: 1%;
+  white-space: nowrap;
+  padding: 2px 4px;
+  text-align: center;
+  background: var(--bg-3);
+}
+
+table.grid td.editing {
+  padding: 0;
+  white-space: nowrap;
+  position: relative;
+}
+
+.cell-edit {
+  display: flex;
+  align-items: stretch;
+}
+
+.cell-input {
+  flex: 1;
+  width: 100%;
+  min-width: 80px;
+  border: none;
+  border-radius: 0;
+  padding: 7px 8px;
+  background: var(--bg);
+  font: inherit;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+.cell-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.cell-null {
+  flex: none;
+  padding: 0 8px;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--panel);
+  border: none;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.row-del,
+.row-save,
+.row-cancel,
+.row-undo {
+  padding: 1px 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.row-del:hover:not(:disabled) {
+  color: var(--err);
+  border-color: var(--err);
+}
+
+.row-undo {
+  color: var(--warn);
+}
+
+.row-save {
+  color: var(--ok);
+}
+
+.row-save:hover:not(:disabled) {
+  border-color: var(--ok);
+}
+
+/* A cell with a staged (uncommitted) edit. */
+table.grid td.dirty {
+  background: color-mix(in srgb, var(--warn) 22%, var(--bg));
+  color: var(--text);
+  font-style: normal;
+}
+
+/* A row staged for deletion. */
+table.grid tr.deleted td:not(.gutter) {
+  text-decoration: line-through;
+  color: var(--err);
+  opacity: 0.6;
+}
+
+table.grid tr.new-row td {
+  background: var(--bg-2);
+}
+
+/* Bottom commit bar shown while there are staged changes. */
+.edit-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 4px 2px;
+  border-top: 1px solid var(--border);
+}
+
+.edit-bar .spacer {
+  flex: 1;
+}
+
+.grid-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 6px;
+  font-size: 12px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+}
+
+.grid-footer .spacer {
+  flex: 1;
+}
+
+.grid-footer .truncated-note {
+  color: var(--warn);
+  cursor: help;
+}
+
+.view-switch {
+  display: inline-flex;
+}
+
+.view-switch button {
+  padding: 3px 12px;
+  min-width: 64px;
+  font-size: 12px;
+  line-height: 1.5;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  color: var(--muted);
+  cursor: pointer;
+  position: relative;
+}
+
+/* Collapse the shared border between adjacent segments. */
+.view-switch button + button {
+  margin-left: -1px;
+}
+
+.view-switch button:first-child {
+  border-radius: 5px 0 0 5px;
+}
+
+.view-switch button:last-child {
+  border-radius: 0 5px 5px 0;
+}
+
+/* Lift hovered/active segments so their full border draws over neighbors. */
+.view-switch button:hover:not(:disabled),
+.view-switch button.active {
+  z-index: 1;
+}
+
+.view-switch button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg-3);
+}
+
+.ddl {
+  margin: 0;
+  padding: 10px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre;
+  color: var(--text);
+}
+
+.grid-footer-table {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  color: var(--text);
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.grow {
+  flex: 1;
+  min-width: 120px;
+}
+
+.section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section h3 {
+  margin: 0;
+  font-size: 13px;
+  color: var(--accent-2);
+}
+
+.msg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.msg-item {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px;
+  background: var(--bg-2);
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.msg-meta {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* RabbitMQ management workspace ------------------------------------------ */
+
+.mq {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 12px;
+  gap: 10px;
+}
+
+.mq-tabbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 8px;
+}
+
+.mq-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 4px 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.mq-tab:hover {
+  color: var(--text);
+}
+
+.mq-tab.active {
+  background: var(--panel);
+  border-color: var(--border);
+  color: var(--accent);
+}
+
+.mq-refresh {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.mq-spin {
+  color: var(--accent-2);
+}
+
+.mq-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* List + optional detail panel side by side. */
+.mq-split {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  min-height: 0;
+}
+
+.mq-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  overflow: auto;
+}
+
+.mq-main h3 {
+  margin: 0;
+  font-size: 13px;
+  color: var(--accent-2);
+}
+
+.mq-detail {
+  width: 360px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+}
+
+.mq-detail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mq-row-sel td {
+  background: var(--panel);
+}
+
+/* Overview ---------------------------------------------------------------- */
+
+.mq-overview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+}
+
+.mq-overview h3 {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--accent-2);
+}
+
+.mq-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  background: var(--bg-2);
+}
+
+.mq-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mq-stat {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  background: var(--bg-2);
+  min-width: 96px;
+}
+
+.mq-stat-val {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mq-stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── SFTP File Manager (GNOME Files / Nautilus-style) ─────────────────────── */
+
+.fm-workspace {
+  background: var(--bg);
+  /* Positioning context for the workspace-scoped transfer overlay
+     (`.fm-progress-backdrop`), which must cover only this area and not the
+     sidebar/connection switcher. */
+  position: relative;
+}
+
+/* Transfer progress overlay, scoped to the file-manager workspace. Unlike the
+   global `.modal-backdrop` (fixed, full-viewport), this is absolutely
+   positioned within `.fm-workspace`, so the sidebar stays interactive and the
+   user can switch connections while a transfer runs in the plugin. */
+.fm-progress-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* Places sidebar */
+.fm-sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-2);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.fm-sidebar-section {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 4px 8px;
+  font-weight: 600;
+}
+
+.fm-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.fm-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border-radius: 7px;
+  padding: 4px 8px 4px 0;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.fm-tree-row:hover {
+  background: var(--panel);
+}
+
+.fm-tree-row.active {
+  background: var(--accent);
+  color: var(--bg-3);
+}
+
+.fm-tree-row.active .fm-icon-folder {
+  fill: var(--bg-3);
+}
+
+.fm-tree-twisty {
+  width: 14px;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.fm-tree-row.active .fm-tree-twisty {
+  color: var(--bg-3);
+}
+
+.fm-tree-twisty:not(.empty):hover {
+  color: var(--text);
+}
+
+.fm-tree-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Main column */
+.fm-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Header bar */
+.fm-headerbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+
+.fm-nav {
+  display: flex;
+  gap: 2px;
+}
+
+.fm-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 7px;
+  border-radius: 7px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.fm-iconbtn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.fm-iconbtn.active {
+  background: var(--accent);
+  color: var(--bg-3);
+  border-color: var(--accent);
+}
+
+/* Pill pathbar (breadcrumb) */
+.fm-pathbar {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2px;
+  scrollbar-width: thin;
+}
+
+.fm-crumb {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--text);
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.fm-crumb:hover:not(:disabled) {
+  background: var(--panel);
+  border-color: transparent;
+}
+
+.fm-crumb.current {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.fm-crumb:not(:last-child)::after {
+  content: "›";
+  color: var(--muted);
+  margin-left: 8px;
+  margin-right: -6px;
+  font-weight: 400;
+}
+
+.fm-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fm-viewtoggle {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--bg-3);
+  border-radius: 8px;
+}
+
+.fm-viewtoggle .fm-iconbtn {
+  background: transparent;
+  border-color: transparent;
+}
+
+.fm-viewtoggle .fm-iconbtn.active {
+  background: var(--accent);
+  color: var(--bg-3);
+}
+
+@keyframes fm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Blocking loader overlay -------------------------------------------------- */
+
+.loader-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  /* Block every click underneath. */
+  pointer-events: auto;
+  cursor: wait;
+}
+
+/* App scope: covers the whole window (sidebar + workspace). Sits above the
+   collapsible sidebar (z-index: 60) and below nothing else interactive. */
+.loader-overlay--app {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+/* Workspace scope: anchored inside `.main` (position: relative), so the
+   sidebar stays clickable and the user can switch connections. */
+.loader-overlay--workspace {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+}
+
+.loader-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 28px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.loader-message {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.loader-spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: fm-spin 0.7s linear infinite;
+}
+
+.fm-error {
+  color: var(--err);
+  background: color-mix(in srgb, var(--err) 12%, transparent);
+  padding: 8px 12px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* New-folder inline bar */
+.fm-newfolder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.fm-newfolder input {
+  flex: 0 1 280px;
+}
+
+/* Content area */
+.fm-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  padding: 16px;
+}
+
+.fm-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* Icons */
+.fm-icon-folder {
+  fill: var(--accent);
+}
+
+.fm-icon-file {
+  fill: var(--panel);
+  stroke: var(--muted);
+  stroke-width: 1.2;
+}
+
+.fm-icon-file-fold {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+/* Grid (icon) view */
+.fm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 6px;
+}
+
+.fm-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.fm-tile:hover {
+  background: var(--panel);
+}
+
+.fm-tile.selected {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: var(--accent);
+}
+
+.fm-tile-icon {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fm-tile-label {
+  width: 100%;
+  text-align: center;
+}
+
+.fm-tile-label .fm-label-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+/* List view */
+.fm-list {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.fm-list thead th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: -16px;
+  background: var(--bg);
+}
+
+.fm-list-row {
+  cursor: pointer;
+  user-select: none;
+}
+
+.fm-list-row td {
+  padding: 6px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.fm-list-row:hover {
+  background: var(--panel);
+}
+
+.fm-list-row.selected {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.fm-list-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.fm-list-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.fm-col-size {
+  width: 110px;
+  white-space: nowrap;
+}
+
+.fm-col-date {
+  width: 150px;
+  white-space: nowrap;
+}
+
+.fm-col-perms {
+  width: 110px;
+  white-space: nowrap;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+/* Rename input (shared grid/list) */
+.fm-rename-input {
+  width: 100%;
+  font: inherit;
+  padding: 1px 4px;
+  text-align: inherit;
+}
+
+/* Status bar */
+.fm-statusbar {
+  flex-shrink: 0;
+  border-top: 1px solid var(--border);
+  background: var(--bg-2);
+  padding: 5px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fm-statusbar-warning {
+  margin-left: auto;
+  color: var(--warning, #d18616);
+  font-weight: 500;
+}
+
+/* Context menu */
+.fm-context {
+  position: fixed;
+  z-index: 1000;
+  min-width: 170px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 5px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.fm-context button {
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 12px;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.fm-context button:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--bg-3);
+  border-color: transparent;
+}
+
+.fm-context-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+.fm-context-danger:hover:not(:disabled) {
+  background: var(--err) !important;
+  color: #fff !important;
+}
+
+/* Folder-download progress (indeterminate bar) */
+.fm-progress {
+  min-width: 380px;
+}
+
+.fm-progress-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-3);
+  overflow: hidden;
+  margin: 14px 0 10px;
+}
+
+.fm-progress-fill {
+  height: 100%;
+  width: 40%;
+  border-radius: 999px;
+  background: var(--accent);
+  animation: fm-progress-slide 1.1s ease-in-out infinite;
+}
+
+@keyframes fm-progress-slide {
+  0% {
+    margin-left: -40%;
+  }
+  100% {
+    margin-left: 100%;
+  }
+}
+
+.fm-progress-status {
+  font-size: 12px;
+  margin: 0 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fm-progress-file {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+/* Status-bar download note */
+.fm-statusbar-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+}
+
+.fm-statusbar-dismiss {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.fm-statusbar-dismiss:hover {
+  color: var(--text);
+  border-color: transparent;
+}
+
+/* Drag-and-drop upload target */
+.fm-content.drag-over {
+  outline: 2px dashed var(--accent);
+  outline-offset: -8px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.fm-drop-overlay {
+  position: absolute;
+  inset: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* KeyValue connection form field ------------------------------------------- */
+
+.keyvalue-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.keyvalue-empty {
+  margin: 0;
+  font-size: 12px;
+}
+
+.keyvalue-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.keyvalue-key {
+  flex: 0 1 140px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.keyvalue-val {
+  flex: 1;
+}
+
+.keyvalue-remove {
+  min-width: 28px;
+  padding: 0 6px;
+}
+
+.keyvalue-add {
+  align-self: flex-start;
+  font-size: 12px;
+}
+
+/* HTTP Client (curlui) workspace ------------------------------------------- */
+
+.curlui-workspace {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.curlui-env-summary {
+  margin-left: auto;
+  font-size: 12px;
+}
+
+.curlui-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.curlui-tree {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--bg-2);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Active-environment switcher pinned to the top of the collections tree. */
+.curlui-env-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.curlui-env-bar-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.curlui-env-select {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.curlui-env-edit,
+.curlui-env-add {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-2);
+  color: var(--text-muted, var(--text));
+  cursor: pointer;
+  line-height: 1;
+}
+
+.curlui-env-edit:hover,
+.curlui-env-add:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.curlui-env-active-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg, #fff);
+}
+
+.curlui-tree-col-external {
+  margin-left: 4px;
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+.curlui-tree-col-missing .curlui-tree-col-label {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.curlui-tree-fabs {
+  position: sticky;
+  bottom: 12px;
+  align-self: flex-end;
+  margin: auto 12px 12px;
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.curlui-tree-fab {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-muted, var(--text));
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition:
+    opacity 0.12s,
+    color 0.12s,
+    border-color 0.12s;
+}
+
+.curlui-tree-fab:hover {
+  opacity: 1;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.curlui-tree-node {
+  font-size: 13px;
+}
+
+.curlui-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+}
+
+.curlui-tree-toggle {
+  background: transparent;
+  border: none;
+  padding: 0 2px;
+  color: var(--muted);
+  min-width: 16px;
+}
+
+.curlui-tree-folder-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.curlui-tree-label {
+  flex: 1;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Collection name doubles as a button that opens the collection editor. */
+.curlui-tree-col-label {
+  background: transparent;
+  border: none;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0;
+}
+
+.curlui-tree-col.active,
+.curlui-tree-row.active {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.curlui-tree-col-label:hover {
+  text-decoration: underline;
+}
+
+.curlui-tree-actions {
+  display: flex;
+  gap: 2px;
+}
+
+/* Only the ⋮ trigger dims/brightens — scoped to a direct child of .conn-menu
+ * so it doesn't leak into the .conn-menu-popup items nested beside it, which
+ * must keep the connection list's full-size, opaque .footer-menu-item look. */
+.curlui-tree-actions > .conn-menu > button {
+  background: transparent;
+  border: none;
+  padding: 0 4px;
+  font-size: 16px;
+  line-height: 1;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.curlui-tree-actions > .conn-menu > button:hover {
+  opacity: 1;
+}
+
+.curlui-tree-request {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.curlui-tree-request:hover {
+  background: var(--panel);
+}
+
+.curlui-tree-request.active {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* Drag-and-drop indicators for the tree (mirrors the connection list in
+   .conn-item): the dragged row fades, and the hovered drop target shows an
+   inset accent line at its top (before) or bottom (after), or an inset outline
+   + faint fill when dropping into a folder/collection. */
+.curlui-tree-request.dragging,
+.curlui-tree-row.dragging {
+  opacity: 0.5;
+}
+
+.curlui-tree-request.drag-over-before,
+.curlui-tree-row.drag-over-before {
+  box-shadow: inset 0 2px 0 var(--accent);
+}
+
+.curlui-tree-request.drag-over-after,
+.curlui-tree-row.drag-over-after {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.curlui-tree-request.drag-over-into,
+.curlui-tree-row.drag-over-into {
+  box-shadow: inset 0 0 0 2px var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.curlui-req-method {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 36px;
+}
+
+/* Postman-style method colors, shared by the tree row and the method select. */
+.m-get {
+  color: var(--ok);
+}
+.m-post {
+  color: var(--warn);
+}
+.m-put {
+  color: var(--accent-2);
+}
+.m-patch {
+  color: var(--accent);
+}
+.m-delete {
+  color: var(--err);
+}
+.m-info,
+.m-other {
+  color: var(--muted);
+}
+select.curlui-method {
+  font-weight: 700;
+}
+
+.curlui-req-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.curlui-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 12px;
+  gap: 10px;
+}
+
+/* Editor pane: fills the space under the tab strip; flex column so the
+   request editor + resizer + response lay out and the response can grow. */
+.curlui-editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 10px;
+}
+
+/* Open request tabs strip (Postman-style). */
+.curlui-req-tabs {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.curlui-req-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 6px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: -1px;
+}
+
+.curlui-req-tab:hover {
+  background: var(--panel);
+}
+
+.curlui-req-tab.active {
+  color: var(--text);
+  background: var(--bg-2);
+  border-color: var(--border);
+}
+
+.curlui-req-tab-method {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.curlui-req-tab-icon {
+  font-size: 11px;
+}
+
+.curlui-req-tab-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.curlui-req-tab-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0 2px;
+  font-size: 11px;
+  line-height: 1;
+  border-radius: 4px;
+  opacity: 0.6;
+}
+
+.curlui-req-tab-close:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--err) 30%, transparent);
+}
+
+/* Unsaved marker on a scratch (temporary) request tab. */
+.curlui-req-tab-unsaved {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* "+" button at the end of the tab strip that opens a new scratch request. */
+.curlui-req-tab-new {
+  flex-shrink: 0;
+  align-self: center;
+  width: 24px;
+  height: 24px;
+  margin: 0 4px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.curlui-req-tab-new:hover {
+  color: var(--accent);
+  border-color: var(--border);
+  background: var(--panel);
+}
+
+/* Save-to-collection dialog fields. */
+.curlui-save-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.curlui-save-field > select,
+.curlui-save-field > input {
+  width: 100%;
+}
+
+.curlui-request-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.curlui-request-bar-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.curlui-req-name-input {
+  flex: 0 1 160px;
+  min-width: 100px;
+}
+
+.curlui-req-title-input {
+  flex: 1;
+  min-width: 60px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.curlui-req-title-input:hover {
+  background: var(--bg-2);
+  border-color: var(--border);
+}
+
+.curlui-req-title-input:focus {
+  background: var(--bg-2);
+  border-color: var(--accent);
+}
+
+.curlui-req-location {
+  display: flex;
+  align-items: center;
+  font-size: 11.5px;
+  color: var(--muted);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.curlui-req-location-crumb {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  flex-shrink: 1;
+}
+
+.curlui-req-location-crumb button {
+  all: unset;
+  cursor: pointer;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 3px;
+}
+
+.curlui-req-location-crumb button:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.curlui-req-location-sep {
+  margin: 0 5px;
+  color: var(--muted);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.curlui-url-input {
+  flex: 1;
+  min-width: 200px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+/* Inline {{VAR}} highlighting: a transparent input/textarea layered over a
+ * backdrop that renders the same text with colored placeholder spans. The
+ * wrapper takes on whatever sizing class the caller passed (curlui-url-input,
+ * curlui-kv-value, etc.) so layout is unaffected; font-family/size cascade to
+ * the backdrop/input as normal inherited properties. */
+.var-hl-field {
+  position: relative;
+  display: block;
+}
+
+.var-hl-backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+  pointer-events: none;
+  white-space: pre;
+  color: var(--text);
+}
+
+.var-hl-backdrop.multiline {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.var-hl-field:focus-within .var-hl-backdrop {
+  border-color: var(--accent);
+}
+
+.var-hl-token {
+  border-radius: 3px;
+}
+
+.var-hl-token.var-hl-resolved {
+  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 20%, transparent);
+}
+
+.var-hl-token.var-hl-unresolved {
+  color: var(--err);
+  background: color-mix(in srgb, var(--err) 18%, transparent);
+}
+
+.var-hl-field > .var-hl-input {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+  caret-color: var(--text);
+}
+
+.var-hl-field > .var-hl-input:focus {
+  border-color: transparent;
+}
+
+.curlui-env-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.curlui-env-tab code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+.curlui-editors {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex-shrink: 0;
+}
+
+/* Tab strip shared by the request editor and the response panel. */
+.curlui-tab-panel {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-top: 8px;
+}
+
+/* Editable key/value table (params, headers). */
+.curlui-kv {
+  display: flex;
+  flex-direction: column;
+}
+
+.curlui-kv-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.curlui-kv-check {
+  flex-shrink: 0;
+}
+
+.curlui-kv-key,
+.curlui-kv-value {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.curlui-kv-key {
+  flex: 0 1 240px;
+  min-width: 120px;
+}
+
+.curlui-kv-value {
+  flex: 1;
+  min-width: 120px;
+}
+
+.curlui-kv-del {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0 6px;
+}
+
+.curlui-kv-del:hover {
+  color: var(--err);
+}
+
+/* Multipart/form-data field table (extends .curlui-kv). */
+.curlui-mp-kind {
+  flex: 0 0 84px;
+  font-size: 12px;
+}
+
+.curlui-mp-file {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.curlui-mp-path {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Read-only (auto-generated) header rows. */
+.curlui-kv-locked .curlui-kv-key,
+.curlui-kv-locked .curlui-kv-value {
+  color: var(--muted);
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+.curlui-kv-locked .curlui-kv-check {
+  cursor: default;
+}
+
+.curlui-kv-overridden .curlui-kv-key,
+.curlui-kv-overridden .curlui-kv-value {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.curlui-auto-headers-label {
+  margin-top: 10px;
+  margin-bottom: 2px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.curlui-body-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+/* Authorization tab. */
+.curlui-auth {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 520px;
+}
+
+/* Collection settings pane (variables / headers / auth). */
+.curlui-collection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 10px;
+}
+
+.curlui-collection-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.curlui-collection-icon {
+  font-size: 18px;
+}
+
+.curlui-collection-hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+.curlui-collection-hint code {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+.curlui-collection-external {
+  margin: -4px 0 8px;
+  font-size: 12px;
+  color: var(--text-muted, var(--text));
+  word-break: break-all;
+}
+
+.curlui-collection-external-missing {
+  color: var(--err);
+}
+
+.curlui-auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.curlui-auth-field > select {
+  align-self: flex-start;
+}
+
+.curlui-auth-input {
+  width: 100%;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+/* Request Headers tab: inherit toggle + read-only inherited list. */
+.curlui-headers-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.curlui-inherit-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.curlui-inherited-headers {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+}
+
+.curlui-inherited-row {
+  display: flex;
+  gap: 8px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.curlui-inherited-key {
+  flex: 0 0 200px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.curlui-inherited-val {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.curlui-body-kind {
+  align-self: flex-start;
+}
+
+.curlui-body-input,
+.curlui-import-text {
+  width: 100%;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.curlui-name-input {
+  width: 100%;
+}
+
+.curlui-body-input {
+  flex: 1;
+  min-height: 80px;
+  resize: none;
+}
+
+/* Content editor: the shared CodeEditorV2 (CodeMirror) fills the pane, with the
+   Format / Validate actions overlaying its bottom-left so they read as part of
+   the editor surface rather than a separate toolbar. Used for curl request
+   bodies and the rdbms cell editor (the `.cell-editor` class forwarded to the
+   inner editor sets the modal sizing). */
+.content-editor {
+  position: relative;
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.content-editor > .code-editor-v2 {
+  flex: 1;
+  min-height: 80px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* In the rdbms cell-editor modal the wrapper sits in normal block flow (no flex
+   parent to size it), so give it an explicit height. */
+.content-editor:has(> .cell-editor) {
+  height: 460px;
+}
+
+.content-editor > .code-editor-v2.cell-editor {
+  height: 100%;
+}
+
+/* Leave room below the last line for the overlaid Format/Validate actions so
+   they don't cover content (read-only mode has no toolbar, so skip it). */
+.content-editor:not(.is-readonly) > .code-editor-v2 .cm-content {
+  padding-bottom: 26px;
+}
+
+.content-editor-toolbar {
+  position: absolute;
+  bottom: 6px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* Let clicks through the gap fall to the editor; children re-enable. */
+  pointer-events: none;
+}
+
+.content-editor-toolbar > * {
+  pointer-events: auto;
+}
+
+.content-editor-toolbar button {
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.content-editor-toolbar button:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.content-editor-status {
+  font-size: 11px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  max-width: 380px;
+  max-height: 4.5em;
+  overflow-y: auto;
+  white-space: normal;
+  word-break: break-word;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+}
+
+.content-editor-status.is-ok {
+  color: var(--ok);
+}
+
+.content-editor-status.is-err {
+  color: var(--err);
+}
+
+.curlui-response {
+  flex: 1;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.curlui-response-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.curlui-status {
+  font-weight: 600;
+}
+
+.curlui-status.s-ok {
+  color: var(--ok);
+}
+
+.curlui-status.s-warn {
+  color: var(--warn);
+}
+
+.curlui-status.s-err {
+  color: var(--err);
+}
+
+.curlui-status.s-info {
+  color: var(--muted);
+}
+
+.curlui-response-headers,
+.curlui-curl {
+  margin: 0;
+  padding: 10px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+}
+
+/* Response body is rendered by a read-only ContentEditor. It fills the tab
+   panel whether it lands as the highlighted code surface (json/xml/html) or a
+   bare textarea (text/plain or binary) — both wrapped in .content-editor. */
+.curlui-tab-panel > .content-editor {
+  height: 100%;
+}
+
+/* The text/plain (or binary) response textarea: monospace box, no resize.
+   Sizing/fill comes from `.content-editor > textarea`. */
+.curlui-tab-panel > .content-editor > textarea {
+  padding: 10px;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  resize: none;
+}
+
+/* --- Pre-request / test scripts --------------------------------------------- */
+
+.curlui-script {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+}
+.curlui-script-editor {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+/* --- Description (collection / folder / request docs) ---------------------- */
+
+.curlui-description {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.curlui-description-input {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
+}
+
+/* Red badge variant for a failing test count on the Test Results tab. */
+.tab-badge.bad {
+  background: var(--err);
+  color: #1a1a1a;
+}
+
+.curlui-tests {
+  padding: 4px 2px;
+  overflow: auto;
+  font-size: 13px;
+}
+.curlui-test-error {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--err) 18%, transparent);
+  color: var(--err);
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.curlui-test-summary {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.curlui-test-pass {
+  color: var(--ok);
+}
+.curlui-test-fail {
+  color: var(--err);
+}
+.curlui-test-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.curlui-test-list li {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-2);
+}
+.curlui-test-badge {
+  display: inline-block;
+  min-width: 40px;
+  margin-right: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  color: #1a1a1a;
+}
+.curlui-test-ok .curlui-test-badge {
+  background: var(--ok);
+}
+.curlui-test-bad .curlui-test-badge {
+  background: var(--err);
+}
+.curlui-test-msg {
+  margin-top: 4px;
+  padding-left: 48px;
+  color: var(--err);
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.curlui-console {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.curlui-console-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.curlui-log {
+  font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 1px 0;
+}
+.curlui-log-warn {
+  color: var(--warn);
+}
+.curlui-log-error {
+  color: var(--err);
+}

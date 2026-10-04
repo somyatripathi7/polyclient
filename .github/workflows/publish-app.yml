@@ -1,0 +1,260 @@
+name: Publish desktop app
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: publish-app-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+
+permissions:
+  contents: write
+
+jobs:
+  # Formatting + linting gate — the app is only built/published if this passes.
+  # Only actually runs when this workflow is dispatched standalone; when
+  # called from publish.yml the orchestrator has already run checks once.
+  checks:
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/checks.yml
+
+  build:
+    name: build ${{ matrix.os }} (${{ matrix.rust-target }})
+    runs-on: ${{ matrix.os }}
+    needs: checks
+    if: |
+      !cancelled() &&
+      (needs.checks.result == 'success' || needs.checks.result == 'skipped') &&
+      (github.ref_type == 'tag' || !contains(github.event.head_commit.message, '[skip ci]'))
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14   # Apple Silicon (arm64)
+            rust-target: aarch64-apple-darwin
+            args: "--target aarch64-apple-darwin"
+          - os: macos-14   # Intel (x86_64) cross-compiled
+            rust-target: x86_64-apple-darwin
+            args: "--target x86_64-apple-darwin"
+          - os: ubuntu-22.04
+            rust-target: x86_64-unknown-linux-gnu
+            args: ""
+          - os: windows-latest
+            rust-target: x86_64-pc-windows-msvc
+            args: ""
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so `git rev-list --count` is accurate
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-target }}
+
+      # 1. Optimized Rust Caching
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          # Included the target in the key so cross-compilation shares cleanly
+          key: ${{ matrix.os }}-${{ matrix.rust-target }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+
+      - name: Install Linux system dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            librsvg2-dev \
+            libayatana-appindicator3-dev \
+            patchelf \
+            build-essential \
+            file \
+            wget
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm # Activates global npm cache
+
+      # 2. Advanced Frontend Caching (node_modules & build artifacts)
+      - name: Cache Node Modules & Frontend Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            dist
+            build
+          key: ${{ matrix.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ matrix.os }}-node-
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # 3. Cache the Tauri frontend build pipeline
+      # Tauri runs a 'beforeBuildCommand' (usually npm run build).
+      # Caching this directory keeps the Rust step fast.
+      - name: Stamp version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            export VERSION="${GITHUB_REF_NAME#v}"
+          else
+            export VERSION=""
+          fi
+          export COUNT=$(git rev-list --count HEAD)
+          node -e '
+            const fs = require("fs");
+            const p = "src-tauri/tauri.conf.json";
+            const c = JSON.parse(fs.readFileSync(p, "utf8"));
+            let v = process.env.VERSION;
+            if (!v) {
+              const [maj, min, patch] = c.version.split(".");
+              v = `${maj}.${min}.${patch}-${process.env.COUNT}`;
+            }
+            c.version = v;
+            fs.writeFileSync(p, JSON.stringify(c, null, 2) + "\n");
+            console.log("Stamped version", c.version);
+          '
+
+      - name: Release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+            echo "name=polyclient desktop ${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=latest" >> "$GITHUB_OUTPUT"
+            echo "name=polyclient desktop (nightly)" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build and publish app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          POLYCLIENT_RELEASE_CHANNEL: ${{ github.ref_type == 'tag' && 'stable' || 'nightly' }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ steps.meta.outputs.tag }}
+          releaseName: ${{ steps.meta.outputs.name }}
+          releaseBody: "Desktop build from ${{ github.sha }}."
+          prerelease: ${{ steps.meta.outputs.prerelease }}
+          args: ${{ matrix.args }}
+
+  finalize:
+    name: finalize release
+    needs: build
+    # `checks` (skipped when called via workflow_call) is a transitive ancestor of
+    # `build` via its own `needs`. A bare `if: needs.build.result == 'success'` gets
+    # an implicit `&& success()` ANDed in, and job-level success() walks the whole
+    # transitive dependency chain — so that skipped `checks` makes it false even
+    # though `build` itself succeeded. `!cancelled()` opts out of the implicit check.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node to bump version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm # Speeds up Node initialization for the finalizing job
+
+      - name: Find current latest version
+        id: latest-version
+        if: github.ref_type != 'tag'
+        shell: bash
+        run: |
+          echo "Exporting latest version from latest-tag"
+          export COUNT=$(git rev-list --count HEAD)
+          node -e '
+            const fs = require("fs");
+            const p = "src-tauri/tauri.conf.json";
+            const c = JSON.parse(fs.readFileSync(p, "utf8"));
+            const [maj, min, patch] = c.version.split(".");
+            const v = `${maj}.${min}.${patch}-${process.env.COUNT}`;
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `latest_version=${v}\n`, "utf8");
+            console.log("Stamped version", c.version);
+          '
+
+      - name: Run latest-tag
+        if: github.ref_type != 'tag'
+        uses: EndBug/latest-tag@v1
+        with:
+          description: "Points to the most recent commit on main"
+          tag-name: "latest"
+
+      - name: Commit version change or clean old assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            export VERSION="${GITHUB_REF_NAME#v}"
+            IFS='.' read -r maj min pat <<< "$VERSION"
+            pat=${pat:-0}
+            pat=$((pat+1))
+            export VERSION="${maj}.${min}.${pat}"
+          
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+            git fetch origin main
+            git checkout main
+            git pull --ff-only origin main
+          
+            node -e '
+              const fs = require("fs");
+              const p = "src-tauri/tauri.conf.json";
+              const c = JSON.parse(fs.readFileSync(p, "utf8"));
+              c.version = process.env.VERSION;
+              fs.writeFileSync(p, JSON.stringify(c, null, 2) + "\n");
+            '
+          
+            git add src-tauri/tauri.conf.json
+          
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: update version to ${VERSION} [skip ci]"
+              git push origin main
+            else
+              echo "No version changes to commit"
+            fi
+          else
+            echo "Cleaning older assets from latest release..."
+            CURRENT_VERSION="${{ steps.latest-version.outputs.latest_version }}"
+            if gh release view latest >/dev/null 2>&1; then
+              gh release view latest --json assets --jq '.assets[].name' | while read -r asset; do
+                [ -n "$asset" ] || continue
+                # Keep the updater manifest (fixed name, no version), the macOS
+                # updater bundles (Tauri names these without a version, so they
+                # never match $CURRENT_VERSION), and the current build's assets;
+                # delete only stale prior-build assets.
+                if [[ "$asset" == "latest.json" \
+                      || "$asset" == polyclient_aarch64.app.tar.gz* \
+                      || "$asset" == polyclient_x64.app.tar.gz* \
+                      || "$asset" == *"$CURRENT_VERSION"* ]]; then
+                  echo "Keeping asset: $asset"
+                else
+                  echo "Deleting asset: $asset"
+                  gh release delete-asset latest "$asset" --yes
+                fi
+              done
+            else
+              echo "latest release does not exist yet"
+            fi
+          fi

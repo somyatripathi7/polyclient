@@ -1,0 +1,88 @@
+name: Checks
+
+# Formatting + linting gate. Runs on PRs and branch pushes, and is also called
+# as a reusable workflow (`workflow_call`) by publish.yml (which then fans out
+# to publish-app.yml and publish-plugins.yml) so that no release is published
+# unless these checks pass. publish-app.yml/publish-plugins.yml also call it
+# directly when dispatched standalone (rebuilding just the app or plugins).
+#
+#   Rust     : cargo fmt --all --check  +  cargo clippy --workspace -D warnings
+#   Frontend : prettier --check  +  eslint  +  tsc --noEmit
+
+on:
+  pull_request:
+  push:
+    # main pushes and v* tags are gated by publish.yml, which calls this
+    # workflow via `workflow_call` — so we only run standalone on `dev`
+    # (and PRs) to avoid double-running the checks on release events.
+    branches: [dev]
+  workflow_call:
+
+# Per-ref: a newer push supersedes an in-flight run, except on main.
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  rust:
+    name: rustfmt + clippy
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: checks-${{ hashFiles('Cargo.lock') }}
+
+      # src-tauri is a workspace member, so `cargo clippy --workspace` compiles
+      # the Tauri host and needs its native GTK/WebKit dependencies on Linux.
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            librsvg2-dev \
+            libayatana-appindicator3-dev \
+            patchelf \
+            build-essential \
+            file \
+            wget
+
+      - name: Check formatting (rustfmt)
+        run: cargo fmt --all --check
+
+      - name: Lint (clippy)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  frontend:
+    name: prettier + eslint + tsc
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Check formatting (prettier)
+        run: npm run format:check
+
+      - name: Lint (eslint)
+        run: npm run lint
+
+      - name: Type-check (tsc)
+        run: npx tsc --noEmit

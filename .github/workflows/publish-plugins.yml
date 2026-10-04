@@ -1,0 +1,221 @@
+name: Publish plugins
+
+# Build the bundled plugin sidecars for every supported target triple and
+# publish them as GitHub release assets so the in-app GitHub installer
+# (src-tauri/src/github.rs) can fetch them.
+#
+# Two modes:
+#   - push to main  -> nightly: rolling `plugins-latest` prerelease,
+#                        version `<major>.<minor>.<commit-count>`.
+#   - push a `v*` tag -> stable: immutable `v<version>` release,
+#                        version taken from the tag (e.g. v0.2.0 -> 0.2.0).
+#
+# Release layout: all plugins are published as assets in a single release.
+# Each release holds all plugin binaries (one per platform, named with the target
+# triple), an aggregate `SHA256SUMS`, and a `plugin_info.json` (id -> name/
+# description/version, from each binary's `--describe`) the in-app installer reads
+# to show plugin metadata before download. Install in-app by pointing at this
+# repo and choosing the tag (e.g., `v0.2.0` or `plugins-latest`).
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+# Master pushes supersede each other; tag builds run independently and are
+# never cancelled (distinct ref -> distinct group).
+concurrency:
+  group: publish-plugins-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+
+permissions:
+  contents: write
+
+jobs:
+  # Formatting + linting gate — plugins are only built/published if this passes.
+  # Only actually runs when this workflow is dispatched standalone; when
+  # called from publish.yml the orchestrator has already run checks once.
+  checks:
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/checks.yml
+
+  build:
+    name: build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    needs: checks
+    if: |
+      !cancelled()
+      && (needs.checks.result == 'success' || needs.checks.result == 'skipped')
+      && (github.ref_type == 'tag'
+      || !contains(github.event.head_commit.message, '[skip ci]'))
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-24.04-arm
+          - target: x86_64-apple-darwin
+            os: macos-14   # cross-compiled on arm64; macos-13 Intel runners are scarce
+          - target: aarch64-apple-darwin
+            os: macos-14
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+          - target: aarch64-pc-windows-msvc
+            os: windows-11-arm
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so `git rev-list --count` is accurate
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      # Auto-version. On a tag, use the tag's version. On main, keep the
+      # major.minor from the workspace Cargo.toml and set the patch to the git
+      # commit count, so each push builds a higher version shared by the app and
+      # all plugins. Stamped only for this build (not committed back) to avoid a
+      # push -> build -> push loop. Portable across BSD/GNU sed (no -i).
+      - name: Stamp version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            base=$(grep -E '^version = "' Cargo.toml | head -1 | sed -E 's/version = "([0-9]+\.[0-9]+).*/\1/')
+            version="${base}.$(git rev-list --count HEAD)"
+          fi
+          echo "Stamping version $version"
+          sed -E 's/^version = "[^"]*"/version = "'"$version"'"/' Cargo.toml > Cargo.toml.tmp
+          mv Cargo.toml.tmp Cargo.toml
+
+      - name: Build plugin binaries
+        shell: bash
+        run: |
+          cargo build --release --target "${{ matrix.target }}" \
+            -p polyclient-plugin-postgres \
+            -p polyclient-plugin-mongodb \
+            -p polyclient-plugin-rabbitmq \
+            -p polyclient-plugin-ssh \
+            -p polyclient-plugin-sftp \
+            -p polyclient-plugin-mysql \
+            -p polyclient-plugin-mssql \
+            -p polyclient-plugin-snowflake \
+            -p polyclient-plugin-s3 \
+            -p polyclient-plugin-curlui
+
+      - name: Stage assets (rename with target triple)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          ext=""
+          [[ "${{ matrix.target }}" == *windows* ]] && ext=".exe"
+          for crate in polyclient-plugin-postgres polyclient-plugin-mongodb polyclient-plugin-rabbitmq polyclient-plugin-ssh polyclient-plugin-sftp \
+          polyclient-plugin-mysql polyclient-plugin-mssql polyclient-plugin-snowflake polyclient-plugin-s3 polyclient-plugin-curlui; do
+            src="target/${{ matrix.target }}/release/${crate}${ext}"
+            dest="dist/${crate}-${{ matrix.target }}${ext}"
+            cp "$src" "$dest"
+            echo "staged $dest"
+          done
+
+      # Generate the aggregate plugin_info.json from each binary's `--describe`
+      # output (id, name, description, version). PluginInfo is platform-independent,
+      # so we build it once on the native Linux job (binaries run on this host) and
+      # publish it as a single release asset. The in-app installer reads it to show
+      # each plugin's name/description/version BEFORE downloading (github.rs).
+      - name: Generate plugin_info.json
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        shell: bash
+        run: |
+          set -euo pipefail
+          info="{}"
+          for crate in polyclient-plugin-postgres polyclient-plugin-mongodb polyclient-plugin-rabbitmq polyclient-plugin-ssh polyclient-plugin-sftp \
+          polyclient-plugin-mysql polyclient-plugin-mssql polyclient-plugin-snowflake polyclient-plugin-s3 polyclient-plugin-curlui; do
+            described=$("target/${{ matrix.target }}/release/${crate}" --describe)
+            info=$(jq -n --argjson acc "$info" --argjson d "$described" \
+              '$acc + { ($d.id): { name: $d.name, description: $d.description, version: $d.version } }')
+          done
+          echo "$info" | jq . | tee dist/plugin_info.json
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugins-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    name: publish releases
+    needs: build
+    # See publish-app.yml's `finalize` job: without an explicit override, the
+    # implicit success() check walks the transitive dependency chain and trips on
+    # the (intentionally) skipped `checks` job, silently skipping this job even
+    # when `build` succeeded.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so the moved tag resolves cleanly
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: plugins-*
+          path: staging
+          merge-multiple: true
+
+      # Decide the tag suffix and prerelease flag from the trigger.
+      - name: Release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.ref_type }}" == "tag" ]]; then
+            echo "tag=plugins-${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            echo "label=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=plugins-latest" >> "$GITHUB_OUTPUT"
+            echo "label=nightly" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stage all assets and generate checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          cp staging/* release/
+          # Generate aggregate SHA256SUMS for all plugins
+          ( cd release && sha256sum * > SHA256SUMS )
+          echo "== All plugins =="
+          cat release/SHA256SUMS
+
+      - name: Publish all plugins release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: "Plugins (${{ steps.meta.outputs.label }})"
+          body: "All plugins build from ${{ github.sha }}."
+          prerelease: ${{ steps.meta.outputs.prerelease }}
+          make_latest: false
+          files: release/*
+
+      # Nightly only: move the rolling `plugins-latest` git tag to this commit so
+      # it tracks the most recent main build (mirrors publish-app.yml's `latest`
+      # tag). Tag builds publish an immutable `plugins-v<semver>` tag instead.
+      - name: Run plugins-latest tag
+        if: github.ref_type != 'tag'
+        uses: EndBug/latest-tag@v1
+        with:
+          description: "Points to the most recent plugins build on main"
+          ref: "plugins-latest"

@@ -1,0 +1,16 @@
+[package]
+name = "polyclient-filemanager-common"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+polyclient-core.workspace = true
+polyclient-plugin-runtime.workspace = true
+async-trait.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true

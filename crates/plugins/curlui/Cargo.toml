@@ -1,0 +1,12 @@
+[package]
+name = "polyclient-plugin-curlui"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+polyclient-core.workspace = true
+polyclient-plugin-runtime.workspace = true
+async-trait.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true

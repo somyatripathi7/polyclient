@@ -1,0 +1,49 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/polyclient-core",
+    "crates/polyclient-plugin-runtime",
+    "crates/polyclient-rdbms-common",
+    "crates/polyclient-filemanager-common",
+    "crates/plugins/postgres",
+    "crates/plugins/mongodb",
+    "crates/plugins/rabbitmq",
+    "crates/plugins/ssh",
+    "crates/plugins/sftp",
+    "crates/plugins/snowflake",
+    "crates/plugins/mysql",
+    "crates/plugins/mssql",
+    "crates/plugins/s3",
+    "crates/plugins/curlui",
+    "src-tauri",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/somyatripathi7/polyclient"
+
+[workspace.dependencies]
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+
+polyclient-core = { path = "crates/polyclient-core" }
+polyclient-plugin-runtime = { path = "crates/polyclient-plugin-runtime" }
+polyclient-rdbms-common = { path = "crates/polyclient-rdbms-common" }
+polyclient-filemanager-common = { path = "crates/polyclient-filemanager-common" }
+polyclient-plugin-postgres = { path = "crates/plugins/postgres" }
+polyclient-plugin-mongodb = { path = "crates/plugins/mongodb" }
+polyclient-plugin-rabbitmq = { path = "crates/plugins/rabbitmq" }
+polyclient-plugin-snowflake = { path = "crates/plugins/snowflake" }
+polyclient-plugin-mysql = { path = "crates/plugins/mysql" }
+polyclient-plugin-mssql = { path = "crates/plugins/mssql" }
+polyclient-plugin-s3 = { path = "crates/plugins/s3" }
+polyclient-plugin-curlui = { path = "crates/plugins/curlui" }

@@ -1,0 +1,9 @@
+dist
+build
+node_modules
+src-tauri/target
+target
+dev-plugins
+docs
+package-lock.json
+*.svg

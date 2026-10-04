@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>polyclient — the all-in-one client for backend developers</title>
+    <meta name="description"
+          content="polyclient is the all-in-one client for backend developers — a cross-platform desktop client for PostgreSQL, MongoDB, RabbitMQ, and SSH, built on a plugin architecture with Tauri and React. Free and open source."/>
+    <meta name="keywords"
+          content="all-in-one client for backend developers, database client, PostgreSQL, MongoDB, RabbitMQ, SSH, message broker, Tauri, plugin"/>
+    <meta property="og:title" content="polyclient — the all-in-one client for backend developers"/>
+    <meta property="og:description"
+          content="The all-in-one client for backend developers: connect to relational databases, document stores, queues, and SSH from one window. Plugin-based, cross-platform, open source."/>
+    <meta property="og:type" content="website"/>
+    <link rel="icon" href="assets/icon.png"/>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+<header class="nav">
+    <div class="nav-inner">
+        <a class="brand" href="index.html">
+            <img src="assets/icon-128.png" alt="polyclient logo"/>
+            polyclient
+        </a>
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#plugins">Plugins</a>
+            <a href="#download">Download</a>
+            <a href="docs.html">Docs</a>
+            <a class="gh" href="https://github.com/somyatripathi7/polyclient" target="_blank" rel="noopener">
+                GitHub ↗
+            </a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="wrap">
+            <img class="logo" src="assets/icon.png" alt="polyclient"/>
+            <h1>The all-in-one client for backend developers.</h1>
+            <p class="tagline">
+                One cross-platform desktop client for SQL databases, document stores,
+                message brokers, SSH terminals, file transfer, and HTTP — every backend
+                tool you reach for, unified behind a single plugin-based window.
+            </p>
+            <div class="cta">
+                <a class="btn primary" href="#download">↓ Download</a>
+                <a class="btn" href="docs.html">Read the docs</a>
+            </div>
+            <div class="badges">
+                <span class="badge"><b>10</b> bundled plugins</span>
+                <span class="badge">Built with <b>Tauri 2</b> + <b>React</b></span>
+                <span class="badge"><b>macOS</b> · <b>Linux</b> · <b>Windows</b></span>
+                <span class="badge"><b>MIT</b> licensed</span>
+            </div>
+            <div class="app-post">
+                <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7477397892140478464?compact=1"
+                        height="399" width="504" frameborder="0" allowfullscreen="" title="Embedded post"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="kicker">Why polyclient</div>
+                <h2>One window for your whole backend</h2>
+                <p>polyclient speaks SQL, documents, queues, shells, files, and HTTP from the same window — and stays small
+                    because the host ships no drivers.</p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <span class="ico">🔌</span>
+                    <h3>Plugin architecture</h3>
+                    <p>Each backend is an out-of-process sidecar the host discovers at runtime. Connection forms and
+                        workspaces render generically from a plugin's declared config schema.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">✏️</span>
+                    <h3>SQL browse &amp; edit</h3>
+                    <p>Browse schemas, tables and DDL across PostgreSQL, MySQL, SQL Server and Snowflake. Run SQL,
+                        filter/sort, and stage multi-cell edits that commit atomically in one transaction.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">📨</span>
+                    <h3>Documents &amp; queues</h3>
+                    <p>Query MongoDB collections, and browse a RabbitMQ broker's overview, queues, exchanges and
+                        connections — publish, get, and purge messages.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">🖥️</span>
+                    <h3>SSH terminal</h3>
+                    <p>Full PTY terminal to remote hosts with password or key auth, plus saved shell scripts per
+                        connection — right inside the same app.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">📁</span>
+                    <h3>Files: SFTP &amp; S3</h3>
+                    <p>A unified file browser over SFTP servers and S3 buckets — upload, download, rename, delete and
+                        mkdir, with multipart uploads for large objects.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">🌐</span>
+                    <h3>HTTP client</h3>
+                    <p>A built-in REST client with collections, environment variables, auth presets, and curl
+                        import/export — like having Postman in the same window.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">📤</span>
+                    <h3>Export &amp; persistence</h3>
+                    <p>Stream full result sets to CSV, and keep saved connection profiles, SQL snippets and scripts per
+                        connection as human-readable JSON.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">⬇️</span>
+                    <h3>In-app plugin install</h3>
+                    <p>Install more plugins straight from a GitHub release — OS/arch matched, SHA-256 checksum-verified,
+                        no rebuild. The app and plugins auto-update.</p>
+                </div>
+                <div class="card">
+                    <span class="ico">🎨</span>
+                    <h3>10 built-in themes</h3>
+                    <p>Catppuccin Mocha &amp; Latte, Dracula, Nord, Tokyo Night, Gruvbox, Monokai, Solarized, and GitHub
+                        Light — dark and light, your pick.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Plugins -->
+    <section id="plugins">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="kicker">Bundled plugins</div>
+                <h2>Ten backends, ready today</h2>
+                <p>Install more in-app straight from a GitHub release — checksum-verified, no rebuild required.</p>
+            </div>
+            <div class="plugins">
+                <div class="plugin">
+                    <span class="tag">rdbms</span>
+                    <h3>PostgreSQL</h3>
+                    <p>PostgreSQL 12+ via <code>sqlx</code>. Schema browsing, SQL editor, inline cell editing.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">rdbms</span>
+                    <h3>MySQL</h3>
+                    <p>MySQL &amp; MariaDB. Browse schemas and tables, run SQL, and edit rows inline.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">rdbms</span>
+                    <h3>SQL Server</h3>
+                    <p>Microsoft SQL Server via the Tiberius driver, with configurable encryption.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">rdbms</span>
+                    <h3>Snowflake</h3>
+                    <p>Snowflake warehouses with key-pair or password auth and warehouse/role selection.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">document</span>
+                    <h3>MongoDB</h3>
+                    <p>MongoDB and Atlas clusters. Browse databases and collections and run <code>find</code> queries.
+                    </p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">rabbitmq</span>
+                    <h3>RabbitMQ</h3>
+                    <p>Brokers via the HTTP Management API. Management-UI-style browsing plus publish / get / purge.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">cli</span>
+                    <h3>SSH</h3>
+                    <p>PTY terminal to remote hosts with password or key auth, plus saved shell scripts.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">filemanager</span>
+                    <h3>SFTP</h3>
+                    <p>Browse and transfer files over SFTP — upload, download, rename, delete, mkdir.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">filemanager</span>
+                    <h3>Amazon S3</h3>
+                    <p>S3 and S3-compatible buckets with multipart uploads for large objects.</p>
+                </div>
+                <div class="plugin">
+                    <span class="tag">http</span>
+                    <h3>HTTP client</h3>
+                    <p>REST client with collections, environments, auth presets, and curl import/export.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="kicker">Under the hood</div>
+                <h2>The host is a generic pipe</h2>
+                <p>The Tauri host knows nothing about SQL, documents, or queues. It transports opaque JSON-RPC between
+                    the frontend and plugin sidecars over stdio.</p>
+            </div>
+            <div class="diagram">
+<pre><code>  React + TypeScript frontend
+            │  @tauri-apps/api invoke()
+            ▼
+  Tauri host (Rust, no DB drivers)
+            │  line-delimited JSON-RPC over stdio
+            ▼
+  Plugin sidecars  ─  postgres · mysql · mssql · snowflake · mongodb · rabbitmq · ssh · sftp · s3 · http
+  (live driver / client / session handles stay inside the plugin)</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download -->
+    <section id="download">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="kicker">Get polyclient</div>
+                <h2>Download</h2>
+                <p>Grab the installer for your platform from the latest GitHub release. Then install a plugin in-app to
+                    start connecting.</p>
+            </div>
+            <div style="max-width:760px;margin:0 auto 28px">
+                <p style="text-align:center;margin:0 0 12px;color:var(--muted)">On macOS or Linux, install with one
+                    command:</p>
+                <pre><code># latest stable release
+curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash
+
+# rolling nightly build
+curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash -s -- --nightly</code></pre>
+            </div>
+            <div class="dl-grid">
+                <div class="dl" data-os="mac">
+                    <div class="os-ico">🍎</div>
+                    <h3>macOS</h3>
+                    <div class="arch">Apple Silicon &amp; Intel · .dmg</div>
+                    <a class="btn primary" href="https://github.com/somyatripathi7/polyclient/releases/latest" target="_blank"
+                       rel="noopener">Download</a>
+                    <span class="yours" hidden>● Your platform</span>
+                </div>
+                <div class="dl" data-os="windows">
+                    <div class="os-ico">🪟</div>
+                    <h3>Windows</h3>
+                    <div class="arch">x64 &amp; arm64 · .msi / .exe</div>
+                    <a class="btn primary" href="https://github.com/somyatripathi7/polyclient/releases/latest" target="_blank"
+                       rel="noopener">Download</a>
+                    <span class="yours" hidden>● Your platform</span>
+                </div>
+                <div class="dl" data-os="linux">
+                    <div class="os-ico">🐧</div>
+                    <h3>Linux</h3>
+                    <div class="arch">x64 &amp; arm64 · .AppImage / .deb</div>
+                    <a class="btn primary" href="https://github.com/somyatripathi7/polyclient/releases/latest" target="_blank"
+                       rel="noopener">Download</a>
+                    <span class="yours" hidden>● Your platform</span>
+                </div>
+            </div>
+            <p class="dl-note">
+                Pick the asset matching your OS and architecture on the release page ·
+                <a href="https://github.com/somyatripathi7/polyclient/releases" target="_blank" rel="noopener">All releases</a>
+                ·
+                <a href="https://github.com/somyatripathi7/polyclient/releases/tag/latest" target="_blank" rel="noopener">Nightly
+                    builds</a>
+            </p>
+            <div class="callout" style="max-width:760px;margin:28px auto 0">
+                <b>⚠️ Heads-up:</b>
+                <ul>
+                    <li>the app auto-updates from GitHub releases.</li>
+                    <li>On macOS,
+                        an unsigned build may be blocked by Gatekeeper on first launch —
+                        run "xattr -c /Applications/polyclient.app" to allow it.
+                    </li>
+                    <li>Connection configs (including passwords)
+                        are currently stored in plaintext.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Build from source -->
+    <section id="build">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="kicker">Prefer the source</div>
+                <h2>Build it yourself</h2>
+                <p>Requires Rust (stable), Node.js 18+, and the Tauri 2 system dependencies.</p>
+            </div>
+            <div style="max-width:760px;margin:0 auto">
+<pre><code>git clone https://github.com/somyatripathi7/polyclient
+cd polyclient
+npm install
+
+# Build the bundled plugins, then point the host at them:
+npm run plugins:dev
+POLYCLIENT_PLUGINS_DIR=$PWD/dev-plugins npm run tauri dev
+
+# Or build a release bundle:
+npm run tauri build</code></pre>
+                <p style="text-align:center;margin-top:18px">
+                    <a class="btn" href="docs.html#building">Full build guide →</a>
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="wrap footer-inner">
+        <div>
+            <strong style="color:var(--text)">polyclient</strong> — MIT licensed
+        </div>
+        <div style="display:flex;gap:20px">
+            <a href="https://github.com/somyatripathi7/polyclient" target="_blank" rel="noopener">GitHub</a>
+            <a href="docs.html">Docs</a>
+            <a href="#download">Download</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Highlight the visitor's platform on the download cards.
+    (function () {
+        var p = navigator.userAgent + " " + (navigator.platform || "");
+        var os = /Mac/i.test(p) ? "mac" : /Win/i.test(p) ? "windows" : /Linux|X11/i.test(p) ? "linux" : null;
+        if (!os) return;
+        var card = document.querySelector('.dl[data-os="' + os + '"]');
+        if (!card) return;
+        card.classList.add("detected");
+        var tag = card.querySelector(".yours");
+        if (tag) tag.hidden = false;
+    })();
+</script>
+</body>
+</html>

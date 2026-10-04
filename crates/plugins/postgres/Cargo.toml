@@ -1,0 +1,18 @@
+[package]
+name = "polyclient-plugin-postgres"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+polyclient-core.workspace = true
+polyclient-rdbms-common.workspace = true
+polyclient-plugin-runtime.workspace = true
+async-trait.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+anyhow.workspace = true
+futures-util = "0.3"
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "tls-rustls-ring", "postgres", "uuid", "chrono", "json", "bigdecimal", "macros"] }

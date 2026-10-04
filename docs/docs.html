@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docs — polyclient, the all-in-one client for backend developers</title>
+  <meta name="description" content="Documentation for polyclient, the all-in-one client for backend developers: installing, plugins, using the app, building from source, and the plugin architecture." />
+  <link rel="icon" href="assets/icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/icon-128.png" alt="polyclient logo" />
+        polyclient
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#features">Features</a>
+        <a href="index.html#plugins">Plugins</a>
+        <a href="index.html#download">Download</a>
+        <a href="docs.html">Docs</a>
+        <a class="gh" href="https://github.com/somyatripathi7/polyclient" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap docs">
+    <!-- TOC -->
+    <aside class="toc">
+      <h4>Getting started</h4>
+      <ul>
+        <li><a href="#install">Install</a></li>
+        <li><a href="#first-connection">First connection</a></li>
+        <li><a href="#plugins">Plugins</a></li>
+      </ul>
+      <h4>Using polyclient</h4>
+      <ul>
+        <li><a href="#workspaces">Workspaces</a></li>
+        <li><a href="#saved">Saved connections</a></li>
+        <li><a href="#themes">Themes</a></li>
+      </ul>
+      <h4>For developers</h4>
+      <ul>
+        <li><a href="#building">Building from source</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#authoring">Authoring a plugin</a></li>
+        <li><a href="#publishing">Publishing a plugin</a></li>
+      </ul>
+    </aside>
+
+    <!-- Body -->
+    <article class="doc-body">
+      <h2 id="install">Install</h2>
+      <p>
+        Download the installer for your platform from the
+        <a href="https://github.com/somyatripathi7/polyclient/releases/latest" target="_blank" rel="noopener">latest GitHub release</a>
+        and run it. Builds are available for macOS (Apple Silicon &amp; Intel),
+        Windows (x64 &amp; arm64), and Linux (x64 &amp; arm64).
+      </p>
+      <div class="callout">
+        <b>macOS Gatekeeper:</b> builds may be unsigned/un-notarized. If the app
+        is blocked on first launch, run <b>"xattr -c /Applications/polyclient.app"</b> to allow it.
+      </div>
+      <p>
+        The app ships with <b>no database drivers</b> — those live in plugins.
+        After installing, add at least one plugin (see
+        <a href="#plugins">Plugins</a>) before the connection form will show any
+        options.
+      </p>
+
+      <h2 id="first-connection">First connection</h2>
+      <ol>
+        <li>Click <b>+</b> in the sidebar to create a connection. Pick a plugin (PostgreSQL, MySQL, SQL Server, Snowflake, MongoDB, RabbitMQ, SSH, SFTP, S3, or HTTP) — the form is generated from that plugin's declared config schema.</li>
+        <li>Click <b>Test</b> to validate the config, then <b>Save</b>. Profiles persist across restarts.</li>
+        <li>Select a saved connection to <b>connect</b>. The workspace that opens depends on the plugin's kind.</li>
+      </ol>
+
+      <h2 id="plugins">Plugins</h2>
+      <p>
+        The host loads plugins at runtime from the plugins directory
+        (<span class="inline-code">$POLYCLIENT_PLUGINS_DIR</span> if set, otherwise
+        <span class="inline-code">&lt;app-data&gt;/plugins</span>). Each plugin is
+        a standalone executable plus a generated
+        <span class="inline-code">&lt;id&gt;.plugin.json</span> manifest.
+      </p>
+      <h3>Install from GitHub (in-app)</h3>
+      <p>
+        Click <b>⤓ Install plugin</b> in the sidebar, enter a repo
+        (<span class="inline-code">owner/name</span>) and optionally a release
+        tag, then <b>Fetch release</b>. The app selects the asset matching your
+        OS/arch target triple, shows the published SHA-256, and — on confirmation
+        — downloads, verifies the checksum, runs the binary's
+        <span class="inline-code">--describe</span> to generate its manifest, and
+        registers it live. The plugin appears in the New-connection form
+        immediately, no rebuild required.
+      </p>
+      <div class="callout">
+        <b>⚠️ Trust:</b> plugins are native executables that run with full access
+        to your machine. Only install plugins you trust. Downloads are
+        checksum-verified for <i>integrity</i>, not authenticity.
+      </div>
+      <h3>Bundled plugins</h3>
+      <table class="t">
+        <thead><tr><th>Plugin</th><th>Kind</th><th>Talks to</th></tr></thead>
+        <tbody>
+          <tr><td>PostgreSQL</td><td><span class="inline-code">rdbms</span></td><td>PostgreSQL 12+ (via sqlx)</td></tr>
+          <tr><td>MySQL</td><td><span class="inline-code">rdbms</span></td><td>MySQL &amp; MariaDB</td></tr>
+          <tr><td>SQL Server</td><td><span class="inline-code">rdbms</span></td><td>Microsoft SQL Server (via Tiberius)</td></tr>
+          <tr><td>Snowflake</td><td><span class="inline-code">rdbms</span></td><td>Snowflake warehouses</td></tr>
+          <tr><td>MongoDB</td><td><span class="inline-code">document</span></td><td>MongoDB &amp; Atlas clusters</td></tr>
+          <tr><td>RabbitMQ</td><td><span class="inline-code">rabbitmq</span></td><td>Brokers via the HTTP Management API</td></tr>
+          <tr><td>SSH</td><td><span class="inline-code">cli</span></td><td>Remote hosts via a PTY terminal</td></tr>
+          <tr><td>SFTP</td><td><span class="inline-code">filemanager</span></td><td>File transfer over SFTP</td></tr>
+          <tr><td>Amazon S3</td><td><span class="inline-code">filemanager</span></td><td>S3 &amp; S3-compatible buckets</td></tr>
+          <tr><td>HTTP client</td><td><span class="inline-code">http</span></td><td>REST APIs (collections + curl import)</td></tr>
+        </tbody>
+      </table>
+      <p>
+        RabbitMQ requires the broker's
+        <span class="inline-code">rabbitmq_management</span> plugin to be enabled.
+      </p>
+
+      <h2 id="workspaces">Workspaces</h2>
+      <p>The workspace rendered for a connection depends on its plugin kind:</p>
+      <ul>
+        <li><b>RDBMS</b> — schema/table tree, SQL editor, results grid, structured + raw filters and sorts, CSV export, and inline cell editing with staged Save/Cancel that commits atomically in one transaction.</li>
+        <li><b>Document</b> — browse databases and collections and run <span class="inline-code">find</span> queries.</li>
+        <li><b>RabbitMQ</b> — browse the broker overview, queues, exchanges, and connections; declare queues and publish / get / purge messages.</li>
+        <li><b>CLI</b> — a PTY terminal to a remote host, with saved shell scripts per connection.</li>
+        <li><b>File manager</b> — an SFTP / S3 file browser: upload, download, rename, delete, and mkdir.</li>
+        <li><b>HTTP</b> — a REST client with collections, environment variables, auth presets, and curl import/export.</li>
+      </ul>
+
+      <h2 id="saved">Saved connections</h2>
+      <p>
+        Profiles persist per-plugin at
+        <span class="inline-code">&lt;app_data_dir&gt;/connections/&lt;plugin_id&gt;/connections.json</span>
+        as human-readable JSON (the base path is OS-specific). Profiles whose
+        owning plugin is no longer installed are skipped on load but left on
+        disk.
+      </p>
+      <div class="callout">
+        <b>⚠️ Security:</b> connection configs — <b>including passwords</b> — are
+        stored in plaintext. A secure-credential store is not yet implemented;
+        treat the files accordingly.
+      </div>
+
+      <h2 id="themes">Themes</h2>
+      <p>
+        polyclient ships with 10 built-in themes — 7 dark, 3 light. The default is
+        Catppuccin Mocha.
+      </p>
+      <p style="color:var(--muted)">
+        Catppuccin Mocha · Dracula · Nord · Tokyo Night · Gruvbox Dark · Monokai ·
+        Solarized Dark · Solarized Light · Catppuccin Latte · GitHub Light.
+      </p>
+
+      <h2 id="building">Building from source</h2>
+      <h3>Prerequisites</h3>
+      <ul>
+        <li><b>Rust</b> (stable) and Cargo — <a href="https://rustup.rs" target="_blank" rel="noopener">rustup.rs</a></li>
+        <li><b>Node.js</b> 18+ and npm</li>
+        <li><b>Tauri 2 system dependencies</b> — see the <a href="https://tauri.app/start/prerequisites/" target="_blank" rel="noopener">Tauri prerequisites guide</a></li>
+      </ul>
+      <h3>Run in development</h3>
+      <p>Plugins are out-of-process executables discovered at runtime, so build them first and point the host at the same directory:</p>
+<pre><code>npm install
+npm run plugins:dev                       # builds the 10 bundled plugins + manifests
+POLYCLIENT_PLUGINS_DIR=$PWD/dev-plugins npm run tauri dev</code></pre>
+      <p>Without any plugins installed the connection form will be empty.</p>
+      <h3>Build a release bundle</h3>
+<pre><code>npm run tauri build   # → src-tauri/target/release/bundle/</code></pre>
+      <table class="t">
+        <thead><tr><th>Command</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="inline-code">npm run dev</span></td><td>Frontend-only Vite dev server (:1420)</td></tr>
+          <tr><td><span class="inline-code">npm run build</span></td><td>Type-check (tsc) and build the frontend</td></tr>
+          <tr><td><span class="inline-code">cargo build</span></td><td>Build the full Rust workspace</td></tr>
+          <tr><td><span class="inline-code">cargo test</span></td><td>Run Rust tests across the workspace</td></tr>
+          <tr><td><span class="inline-code">npm run plugins:dev</span></td><td>Build bundled plugins into dev-plugins/</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="architecture">Architecture</h2>
+      <p>
+        The single most important idea: <b>the Tauri host knows nothing about
+        SQL, documents, or queues.</b> It ships with only the
+        <span class="inline-code">polyclient-core</span> crate (no DB drivers) and acts
+        as a transport between the frontend and out-of-process plugin
+        executables.
+      </p>
+      <div class="diagram">
+<pre><code>React frontend
+      │  @tauri-apps/api invoke()  (8 generic commands)
+      ▼
+Tauri host (src-tauri)  —  no DB drivers
+      │  line-delimited JSON-RPC over stdio
+      ▼
+Plugin sidecars  —  postgres / mysql / mssql / snowflake / mongodb / rabbitmq / ssh / sftp / s3 / http</code></pre>
+      </div>
+      <h3>Three boundaries</h3>
+      <ul>
+        <li><b>Frontend → host:</b> 8 generic Tauri commands. Every capability funnels through a single <span class="inline-code">plugin_call</span> command with an opaque <span class="inline-code">op</span> string (e.g. <span class="inline-code">"rdbms.execute"</span>) plus JSON params, passed through untouched.</li>
+        <li><b>Host → plugin:</b> line-delimited JSON-RPC over stdio. One <span class="inline-code">Request {id, method, params}</span> per line in, one <span class="inline-code">Response {id, ok|err}</span> per line out. A monotonic id multiplexes concurrent calls; <span class="inline-code">PROTOCOL_VERSION</span> is checked at discovery/install.</li>
+        <li><b>Plugin internals:</b> the <span class="inline-code">polyclient-plugin-runtime</span> SDK turns an in-process <span class="inline-code">Plugin</span> into a sidecar and routes <span class="inline-code">call</span> ops via a <span class="inline-code">Dispatcher</span>.</li>
+      </ul>
+      <p>
+        Live connection handles (<span class="inline-code">PgPool</span>,
+        <span class="inline-code">mongodb::Client</span>, the RabbitMQ HTTP
+        client) <b>never cross any boundary</b> — they stay inside the plugin
+        process, keyed by a <span class="inline-code">ConnectionId</span> (UUID).
+      </p>
+      <p>
+        See the full design doc:
+        <a href="https://github.com/somyatripathi7/polyclient/blob/main/plugin-architecture.md" target="_blank" rel="noopener">plugin-architecture.md</a>.
+      </p>
+
+      <h2 id="authoring">Authoring a plugin</h2>
+      <p>The shared traits make new backends small to add. For a relational backend:</p>
+      <ol>
+        <li>Create a <b>binary</b> crate under <span class="inline-code">crates/plugins/&lt;name&gt;</span> depending on <span class="inline-code">polyclient-core</span>, <span class="inline-code">polyclient-plugin-runtime</span>, and (for relational backends) <span class="inline-code">polyclient-rdbms-common</span>. Add it to the workspace members in <span class="inline-code">Cargo.toml</span>.</li>
+        <li>Implement <span class="inline-code">polyclient_core::Plugin</span> — return a <span class="inline-code">PluginInfo</span> with the right <span class="inline-code">kind</span> and a <span class="inline-code">config_schema</span> describing the connection form, plus a <span class="inline-code">connect</span> returning an <span class="inline-code">Arc&lt;dyn Connection&gt;</span>.</li>
+        <li>For relational backends, also implement <span class="inline-code">RdbmsPlugin</span> (<span class="inline-code">list_schemas</span>, <span class="inline-code">list_tables</span>, <span class="inline-code">describe_table</span>, <span class="inline-code">execute</span>, and optionally <span class="inline-code">apply_changes</span> for editing).</li>
+        <li>In <span class="inline-code">main.rs</span>, call <span class="inline-code">polyclient_plugin_runtime::run(plugin, dispatcher)</span> — for RDBMS use <span class="inline-code">RdbmsDispatcher(plugin)</span>. There is no central registry to edit.</li>
+        <li>To run it in dev, add the crate to the <span class="inline-code">PLUGINS</span>/<span class="inline-code">CRATES</span> arrays in <span class="inline-code">scripts/dev-plugins.sh</span>.</li>
+      </ol>
+      <p>
+        Non-relational backends pick a different
+        <span class="inline-code">PluginKind</span>
+        (<span class="inline-code">Document</span>,
+        <span class="inline-code">Rabbitmq</span>, or
+        <span class="inline-code">Other</span>) and the frontend renders the
+        matching workspace component.
+      </p>
+
+      <h2 id="publishing">Publishing a plugin</h2>
+      <p>For a plugin repo to be installable in-app, each GitHub Release must include:</p>
+      <ul>
+        <li><b>One binary per platform</b> whose asset name contains the Rust target triple, e.g. <span class="inline-code">polyclient-plugin-mysql-aarch64-apple-darwin</span> (<span class="inline-code">…-x86_64-pc-windows-msvc.exe</span> on Windows).</li>
+        <li><b>A checksums asset:</b> <span class="inline-code">SHA256SUMS</span> (or <span class="inline-code">checksums.txt</span>) with <span class="inline-code">&lt;sha256&gt;  &lt;asset-name&gt;</span> lines, or a per-asset <span class="inline-code">&lt;asset-name&gt;.sha256</span>.</li>
+      </ul>
+      <p>
+        No manifest is shipped — the host generates it by running the verified
+        binary's <span class="inline-code">--describe</span> at install time.
+      </p>
+
+      <p style="margin-top:48px">
+        <a class="btn" href="index.html#download">← Back to download</a>
+      </p>
+    </article>
+  </div>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div><strong style="color:var(--text)">polyclient</strong> — MIT licensed</div>
+      <div style="display:flex;gap:20px">
+        <a href="https://github.com/somyatripathi7/polyclient" target="_blank" rel="noopener">GitHub</a>
+        <a href="index.html">Home</a>
+        <a href="index.html#download">Download</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
