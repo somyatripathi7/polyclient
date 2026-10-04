@@ -42,9 +42,14 @@ cargo build                              # build full Rust workspace
 cargo test                              # all Rust tests across workspace
 cargo test -p polyclient-core                   # single crate
 cargo test -p polyclient-core protocol          # single test/module by name filter
+
+npm run lint                             # eslint
+npm run format:check                     # prettier (src/**/*.{ts,tsx,css})
+cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings
 ```
 
-There is no frontend test runner or linter configured beyond `tsc` (run via `npm run build`).
+There is no frontend test runner. CI (`.github/workflows/checks.yml`) gates on rustfmt, clippy
+(`-D warnings`), prettier, eslint, and `tsc --noEmit`.
 
 ## Architecture: the host is a generic pipe
 

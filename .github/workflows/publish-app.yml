@@ -56,9 +56,10 @@ jobs:
       # 1. Optimized Rust Caching
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: src-tauri -> target
+          # src-tauri is a member of the root workspace, so the lockfile and
+          # target dir live at the repo root (the action's default workspace).
           # Included the target in the key so cross-compilation shares cleanly
-          key: ${{ matrix.os }}-${{ matrix.rust-target }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+          key: ${{ matrix.os }}-${{ matrix.rust-target }}-${{ hashFiles('Cargo.lock') }}
 
       - name: Install Linux system dependencies
         if: startsWith(matrix.os, 'ubuntu')
