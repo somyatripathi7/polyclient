@@ -31,6 +31,7 @@ use tokio::sync::{mpsc, oneshot, Mutex};
 /// `params` to a result, given the live connection it targets. The host treats
 /// `op` as opaque; each plugin family (rdbms/document/rabbitmq) provides its
 /// own dispatcher. See `polyclient_rdbms_common::dispatch_rdbms`.
+#[allow(clippy::double_must_use)]
 #[async_trait]
 pub trait Dispatcher: Send + Sync + 'static {
     async fn dispatch(&self, op: &str, params: Value, conn: Arc<dyn Connection>) -> Result<Value>;

@@ -184,6 +184,7 @@ pub struct ScannedFile {
 /// `Clone + 'static` is required because [`dispatch_filemanager`] clones the
 /// backend into the spawned transfer task so a transfer outlives the request that
 /// started it.
+#[allow(clippy::double_must_use)]
 #[async_trait]
 pub trait FileBackend: Send + Sync + Clone + 'static {
     /// A writable starting directory (the SFTP home, or `""` = bucket root for S3).

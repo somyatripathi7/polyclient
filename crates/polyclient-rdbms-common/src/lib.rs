@@ -234,6 +234,7 @@ pub struct BrowseSpec {
     pub where_sql: Option<String>,
 }
 
+#[allow(clippy::double_must_use)]
 #[async_trait]
 pub trait RdbmsPlugin: Send + Sync {
     async fn list_schemas(&self, conn: Arc<dyn Connection>) -> Result<Vec<Schema>>;

@@ -254,6 +254,7 @@ pub trait Connection: Send + Sync + std::any::Any {
     fn as_any(&self) -> &dyn std::any::Any;
 }
 
+#[allow(clippy::double_must_use)]
 #[async_trait]
 pub trait Plugin: Send + Sync {
     fn info(&self) -> PluginInfo;
