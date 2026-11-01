@@ -389,9 +389,13 @@ owning plugin: `<app_data_dir>/connections/<plugin_id>/connections.json` (the
 exact base path is OS-specific). The files are human-readable JSON. Profiles
 whose plugin is no longer installed are skipped on load but left on disk.
 
-> ⚠️ **Security note:** connection configs — **including passwords** — are
-> stored in plaintext. Treat the files accordingly. A secure-credential store is
-> not yet implemented.
+Connection configuration values (including passwords, URLs and headers) are stored
+in macOS Keychain, Windows Credential Manager, or a Linux Secret Service provider
+such as GNOME Keyring. JSON files retain profile metadata and opaque references.
+Existing plaintext configurations migrate when loaded. If the credential store is
+locked or unavailable, loading/saving fails rather than falling back to plaintext.
+Copying the JSON files alone does not transfer credentials to another machine.
+
 
 ---
 

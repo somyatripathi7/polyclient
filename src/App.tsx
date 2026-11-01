@@ -72,6 +72,7 @@ export function App() {
   const [sidebarWidth, setSidebarWidth] = useState(240);
   // When true, the sidebar shows as a narrow rail and expands on hover.
   const [sidebarCollapsible, setSidebarCollapsible] = useState(false);
+  const [profilesLoaded, setProfilesLoaded] = useState(false);
   // Saved-profile id pending a delete confirmation (null = no prompt shown).
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
   // A clone draft seeding the new-connection form (config of a source profile
@@ -88,7 +89,10 @@ export function App() {
       .then(setChannel)
       .catch(() => {});
     loadConnections()
-      .then(setSaved)
+      .then((profiles) => {
+        setSaved(profiles);
+        setProfilesLoaded(true);
+      })
       .catch((e) => setLoadError(errString(e)));
     // First launch: show the plugin install step once, then remember it so it
     // doesn't reappear on subsequent launches.
@@ -174,6 +178,12 @@ export function App() {
 
   /** Update saved profiles in state and persist them to disk. */
   function persist(next: SavedConnection[]) {
+    if (!profilesLoaded) {
+      setConnectError(
+        "Saved connections have not loaded. Unlock your credential store and restart the app before saving.",
+      );
+      return;
+    }
     setSaved(next);
     saveConnections(next).catch((e) => setConnectError(errString(e)));
   }

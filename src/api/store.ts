@@ -6,7 +6,8 @@
 // and splits them back out by plugin on save. This module is the single place
 // the UI touches persistence.
 //
-// NOTE: configs are stored as-is, including any password field, in plaintext.
+// Config values are resolved in memory; the backend stores them in the OS
+// credential store and writes only opaque references to profile JSON.
 
 import { invoke } from "@tauri-apps/api/core";
 import type { ConnectionConfig } from "./api.ts";

@@ -111,16 +111,10 @@ pub struct PluginInfo {
 
 pub type ConnectionConfig = HashMap<String, serde_json::Value>;
 
-/// A credential stored in a [`ConnectionConfig`]. Every `Password`-kind config
-/// field carries one of these instead of a bare string, so a secret is
-/// self-describing about *how* it is stored.
-///
-/// Only `PlainText` exists today (the value is stored verbatim, in plaintext —
-/// the same as before this type existed). The `type` tag is the stable wire
-/// discriminant, so future storage strategies (OS keychain, env var, encrypted
-/// blob, …) can be added as new variants without changing the field shape.
-///
-/// Wire/disk form: `{ "type": "PLAIN_TEXT", "value": "hunter2" }`.
+/// An in-memory credential passed between the frontend, host and plugins.
+/// Password fields use `{ "type": "PLAIN_TEXT", "value": "..." }` on the wire.
+/// The host persistence layer replaces config values with OS credential-store
+/// references on disk and resolves them before returning saved profiles.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(tag = "type", content = "value")]
 pub enum SecretField {
@@ -135,7 +129,7 @@ impl SecretField {
     }
 
     /// The resolved plaintext secret. For `PlainText` this is the stored value.
-    /// Future variants resolve their value here (e.g. read from a keychain).
+    /// OS credential-store references are resolved by the host before dispatch.
     pub fn reveal(&self) -> &str {
         match self {
             SecretField::PlainText(v) => v,
