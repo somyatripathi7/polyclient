@@ -9,10 +9,10 @@
 # the app's sidebar via the "⤓ Install plugin" dialog once polyclient is running.
 #
 # Usage:
-#   docs/install.sh [--nightly] [--tag <tag>] [--dir <path>]
+#   scripts/install.sh [--nightly] [--tag <tag>] [--dir <path>]
 #
-#   curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash
-#   curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash -s -- --nightly
+#   curl -fsSL https://raw.githubusercontent.com/somyatripathi7/polyclient/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/somyatripathi7/polyclient/main/scripts/install.sh | bash -s -- --nightly
 #
 # Flags:
 #   --nightly     Install the rolling prerelease (app tag `latest`) instead of
@@ -41,8 +41,8 @@ Install the polyclient desktop app from its GitHub release.
 Usage:
   install.sh [--nightly] [--tag <tag>] [--dir <path>]
 
-  curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash
-  curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash -s -- --nightly
+  curl -fsSL https://raw.githubusercontent.com/somyatripathi7/polyclient/main/scripts/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/somyatripathi7/polyclient/main/scripts/install.sh | bash -s -- --nightly
 
 Flags:
   --nightly     Install the rolling prerelease (app tag `latest`) instead of the

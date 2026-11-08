@@ -133,8 +133,7 @@ polyclient/
 │       ├── rabbitmq/       RabbitMQ plugin (HTTP management API)
 │       └── ssh/            SSH plugin (cli kind; PTY spawned by host)
 ├── scripts/
-│   └── dev-plugins.sh      Build bundled plugins + manifests into dev-plugins/
-├── docs/                   Marketing/docs site (GitHub Pages) + install.sh
+│   ├── dev-plugins.sh      Build bundled plugins + manifests into dev-plugins/
 │   └── install.sh          Install the released desktop app (macOS/Linux)
 ├── src/                    React + TypeScript frontend
 │   ├── App.tsx             Top-level app shell + connection lifecycle
@@ -170,15 +169,15 @@ script — it downloads the release build matching your OS/arch and installs it
 `~/.local/bin/polyclient`):
 
 ```bash
-curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/somyatripathi7/polyclient/main/scripts/install.sh | bash
 
 # rolling nightly build instead of the latest stable release:
-curl -fsSL https://somyatripathi7.github.io/polyclient/install.sh | bash -s -- --nightly
+curl -fsSL https://raw.githubusercontent.com/somyatripathi7/polyclient/main/scripts/install.sh | bash -s -- --nightly
 ```
 
 Flags: `--nightly` (rolling prerelease), `--tag v0.1.2` (a specific release),
 `--dir <path>` (install location). Prefer to read before you pipe to a shell?
-Download [`docs/install.sh`](docs/install.sh) and run it directly.
+Download [`scripts/install.sh`](scripts/install.sh) and run it directly.
 
 **Windows**, or **Linux on arm64**, aren't covered by the script — grab an
 installer from the [latest release](https://github.com/somyatripathi7/polyclient/releases/latest)
