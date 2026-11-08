@@ -187,9 +187,10 @@ The script installs only the app. Once it's running, add database/queue plugins
 from the sidebar's **⤓ Install plugin** dialog — see [Plugins](#plugins). The app
 auto-updates from GitHub releases.
 
-> ⚠️ On macOS the build is unsigned; the script clears the Gatekeeper quarantine
-> flag after copying so it launches, but you may still need to right-click →
-> **Open** the first time.
+## Warnings
+
+- **macOS:** The app isn’t notarized, so you’ll need to go to **System Settings → Privacy & Security → Open Anyway** after trying to launch it. I’m too broke for an Apple Developer license right now.
+- **Disclaimer:** This entire project is vibe coded with Claude and Codex.
 
 ---
 
@@ -423,35 +424,6 @@ plugins return a `PtySpawnSpec` from the `cli.spawn_spec` op; the host spawns
 that program in a PTY and streams I/O via Tauri events. See the SSH plugin
 (`crates/plugins/ssh`) and the existing MongoDB and RabbitMQ plugins as
 references.
-
----
-
-## For AI agents working in this repo
-
-- **Stack:** Tauri 2 + Rust workspace backend; React 18 + TypeScript + Vite
-  frontend. Communication is via Tauri `invoke` commands defined in
-  `src-tauri/src/commands.rs` and mirrored in `src/api.ts`.
-- **The type contract lives in two mirrored places.** Any change to a
-  cross-boundary struct in Rust (`polyclient-core`, `polyclient-rdbms-common`, or a plugin)
-  must be reflected in `src/api.ts`. serde uses `rename_all = "lowercase"` for
-  enums and `camelCase` for saved-connection persistence — match the existing
-  casing.
-- **The host is a generic pipe.** It exposes a small set of generic
-  `#[tauri::command]`s (`list_plugins`, `test_connection`, `open_connection`,
-  `close_connection`, `plugin_call`, the GitHub install pair, persistence, and
-  PTY commands: `pty_spawn`/`pty_write`/`pty_resize`/`pty_close`/`pty_snapshot`).
-  Every capability funnels through `plugin_call` with an opaque `op` string
-  (e.g. `"rdbms.execute"`, `"cli.spawn_spec"`) — only the typed wrappers in
-  `src/api.ts` know the op names. Plugins are **out-of-process sidecars**
-  discovered from `*.plugin.json` manifests at runtime; there is no static
-  registry. See `plugin-architecture.md` for the design.
-- **Live connection handles never cross the IPC boundary.** They stay inside the
-  plugin process keyed by `ConnectionId` (a UUID); the host only tracks the
-  `ConnectionId → plugin_id` route. Don't try to serialize a pool or client.
-- **Build/run:** `./start-dev.sh --build` (or `npm run plugins:dev` then
-  `POLYCLIENT_PLUGINS_DIR=$PWD/dev-plugins npm run tauri dev`) for end-to-end (the form
-  is empty without plugins installed); `cargo test` for backend unit tests;
-  `npm run build` to type-check the frontend.
 
 ---
 
