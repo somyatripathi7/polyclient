@@ -1490,7 +1490,7 @@ select option:hover {
 }
 
 /* Browse toolbar: paging + limit for the table-data view. Per-column filters
-   live on the column headers (see .th-funnel / .filter-popover). */
+   live on the column headers (see .th-column-menu / .filter-popover). */
 .browse-bar {
   display: flex;
   align-items: center;
@@ -1552,7 +1552,7 @@ select option:hover {
   color: var(--accent);
 }
 
-.th-funnel {
+.th-column-menu {
   padding: 0 4px;
   font-size: 11px;
   line-height: 1.4;
@@ -1563,12 +1563,12 @@ select option:hover {
   cursor: pointer;
 }
 
-.th-funnel:hover:not(:disabled) {
+.th-column-menu:hover:not(:disabled) {
   background: var(--bg-2);
   color: var(--text);
 }
 
-.th-funnel.on {
+.th-column-menu.on {
   color: var(--accent);
   border-color: var(--accent);
 }
@@ -1612,6 +1612,23 @@ table.grid th.filtering {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.column-sort-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.column-sort-actions button {
+  text-align: left;
+}
+
+.column-sort-actions button[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .filter-popover-label {

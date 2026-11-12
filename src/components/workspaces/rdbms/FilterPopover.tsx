@@ -54,6 +54,8 @@ interface FilterPopoverProps {
   column: string;
   /** The current filter on this column, if any. */
   filter: FilterRow | undefined;
+  sortDescending: boolean | undefined;
+  onSort: (descending: boolean | null) => void;
   /** The shared raw-WHERE clause (global; editable from any column's popover). */
   where: string;
   disabled: boolean;
@@ -64,12 +66,14 @@ interface FilterPopoverProps {
   onClose: () => void;
 }
 
-/** Per-column filter editor, anchored under a column header's funnel. Holds the
+/** Per-column sort and filter editor, anchored under a column header's triangle. Holds the
  * operator + value for that column, plus the shared raw-WHERE clause. Enter
  * applies, Esc closes; an outside click closes it. */
 export function FilterPopover({
   column,
   filter,
+  sortDescending,
+  onSort,
   where,
   disabled,
   onChange,
@@ -101,8 +105,33 @@ export function FilterPopover({
       ref={ref}
       // Headers carry their own click handlers (sort); keep them out of here.
       onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
     >
       <div className="filter-popover-title">{column}</div>
+      <div className="column-sort-actions">
+        <button
+          disabled={disabled}
+          aria-pressed={sortDescending === false}
+          onClick={() => onSort(false)}
+        >
+          ↑ Sort ascending
+        </button>
+        <button
+          disabled={disabled}
+          aria-pressed={sortDescending === true}
+          onClick={() => onSort(true)}
+        >
+          ↓ Sort descending
+        </button>
+        {sortDescending !== undefined && (
+          <button disabled={disabled} onClick={() => onSort(null)}>
+            Clear sort
+          </button>
+        )}
+      </div>
+      <div className="filter-popover-label">Filter</div>
       <div className="filter-popover-row">
         <select
           value={showRaw ? RAW_OPT : op}

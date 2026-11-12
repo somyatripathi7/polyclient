@@ -515,7 +515,7 @@ export function RdbmsWorkspace({
 
   /** Single-column sort by clicking a header: cycles asc → desc → none. */
   function cycleSort(column: string) {
-    if (!edit) return;
+    if (!edit || busy || saving) return;
     const current = browseSorts.find((s) => s.column === column);
     let next: BrowseSort[];
     if (!current) next = [{ column, descending: false }];
@@ -1138,14 +1138,18 @@ export function RdbmsWorkspace({
                             </span>
                             {interactive && (
                               <button
-                                className={"th-funnel" + (filtered ? " on" : "")}
-                                title={filtered ? "Edit filter" : "Filter column"}
+                                className={"th-column-menu" + (filtered || sort ? " on" : "")}
+                                title="Sort and filter column"
+                                aria-label={`Sort and filter ${c.name}`}
+                                aria-expanded={open}
                                 disabled={busy || saving}
                                 onClick={() =>
                                   setOpenFilterCol((cur) => (cur === c.name ? null : c.name))
                                 }
                               >
-                                <FunnelIcon />
+                                <svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true">
+                                  <path d="M2 5h12l-6 7z" fill="currentColor" />
+                                </svg>
                               </button>
                             )}
                           </div>
@@ -1153,6 +1157,14 @@ export function RdbmsWorkspace({
                             <FilterPopover
                               column={c.name}
                               filter={filt}
+                              sortDescending={sort?.descending}
+                              onSort={(descending) => {
+                                const next: BrowseSort[] =
+                                  descending === null ? [] : [{ column: c.name, descending }];
+                                setBrowseSorts(next);
+                                setOpenFilterCol(null);
+                                applyBrowse({ sorts: next });
+                              }}
                               where={browseWhere}
                               disabled={busy || saving}
                               onChange={(patch) => updateColFilter(c.name, patch)}
